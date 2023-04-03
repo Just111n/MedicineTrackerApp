@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ReminderEditorActivity">
+
+    <TextView
+        android:layout_width="147dp"
+        android:layout_height="42dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:gravity="top"
+        android:text="New Reminder"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="22dp" />
+    <ImageView
+        android:id="@+id/charaImageView"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:src="@drawable/ic_reminder_editor" />
+    <TextView
+        android:layout_width="166dp"
+        android:layout_height="wrap_content"
+        android:text="Medicine Name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+    <EditText
+        android:id="@+id/edit_medName_editText"
+        android:layout_width="332dp"
+        android:layout_height="35dp"
+        android:hint="Enter medicine name"
+        android:background="@drawable/rounded_corners"
+        android:backgroundTint="#FFFBE3E3"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="#A1000000"
+        android:textSize="16dp"
+        />
+
+    <TextView
+        android:id="@+id/TypeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:gravity="center"
+        android:text="Type"
+        android:textSize="20dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/black"
+        />
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="400dp"-->
+<!--        android:layout_height="110dp"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/pills_ImageButton"-->
+<!--            android:src="@drawable/image2"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:backgroundTint="#9CFBE3E3"-->
+<!--            android:background="@drawable/change_button_colour"-->
+<!--            />-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/syrup_ImageButton"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:backgroundTint="#9CFBE3E3"-->
+<!--            android:background="@drawable/medicine_name_curver_edittext"-->
+
+<!--            app:srcCompat="@drawable/image3" />-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/injection_ImageButton"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:backgroundTint="#9CFBE3E3"-->
+<!--            android:background="@drawable/medicine_name_curver_edittext"-->
+<!--            app:srcCompat="@drawable/image4" />-->
+
+<!--    </LinearLayout>-->
+    <TextView
+        android:id="@+id/schedule_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:gravity="left"
+        android:text="Time Of Notifications"
+
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="400dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        &lt;!&ndash;After breakfast button&ndash;&gt;-->
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/Time1_Button"-->
+<!--            android:onClick="Time1Picker"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:background="@drawable/after_breakfast_button"-->
+<!--            android:layout_width="115dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:layout_marginRight="14dp"-->
+<!--            android:backgroundTint="#FFFBE3E3"-->
+<!--            android:text="Time 1"-->
+<!--            android:textColor="#A1000000"-->
+<!--            android:textSize="15dp"-->
+<!--            />-->
+<!--        &lt;!&ndash;After Dinner button&ndash;&gt;-->
+
+<!--        <androidx.appcompat.widget.AppCompatButton-->
+<!--            android:id="@+id/Time2_Button"-->
+<!--            android:onClick="Time2Picker"-->
+<!--            android:layout_width="115dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginRight="14dp"-->
+<!--            android:background="@drawable/after_breakfast_button"-->
+<!--            android:backgroundTint="#C17B61DF"-->
+<!--            android:text="Time 2"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:textColor="#A1000000"-->
+<!--            android:textSize="15dp"-->
+<!--            />-->
+
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/add_Time_FAB"-->
+<!--            android:layout_width="42dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:backgroundTint="#FAEBEB"-->
+<!--            android:src="@drawable/add" />-->
+
+<!--    </LinearLayout>-->
+    <!--layer 4-->
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="25dp"-->
+<!--        android:layout_marginTop="3dp"-->
+<!--        android:orientation="horizontal"-->
+<!--        >-->
+<!--        <TextView-->
+<!--            android:id="@+id/DurationText"-->
+<!--            android:layout_width="80dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:text="End Date"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            android:textSize="18dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            />-->
+<!--        <TextView-->
+<!--            android:id="@+id/FrequencyText"-->
+<!--            android:layout_width="90dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:text="No. of pills"-->
+<!--            android:textSize="18dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:layout_marginLeft="50dp"-->
+<!--            />-->
+
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="500dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/cv"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:background="@drawable/schedule_icon_image6" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/DateText"-->
+<!--            android:layout_width="110dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:hint="Date"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:textSize="16dp"-->
+<!--            android:gravity="left"-->
+
+<!--            />-->
+
+<!--        &lt;!&ndash;        <ImageButton-->
+<!--                    android:id="@+id/timeimage"-->
+<!--                    android:layout_width="30dp"-->
+<!--                    android:layout_height="30dp"-->
+
+<!--                    android:background="@drawable/image5"-->
+<!--                    />&ndash;&gt;-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/frequency_EditText"-->
+<!--            android:layout_width="190dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:hint="Enter here "-->
+<!--            android:textSize="16dp"-->
+<!--            />-->
+
+
+<!--    </LinearLayout>-->
+
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/add_reminder_button"
+        android:layout_width="242dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_corners"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:backgroundTint="#4F517D"
+        android:text="Add Reminder"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/delete_reminder_button"
+        android:layout_width="242dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_corners"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:backgroundTint="#87202f"
+        android:text="Delete Reminder"
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+
+        />
+
+
+
+</LinearLayout>

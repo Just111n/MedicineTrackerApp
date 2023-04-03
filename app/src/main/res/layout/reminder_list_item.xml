@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@drawable/rounded_corners"
+    android:layout_margin="10dp"
+    >
+    <TextView
+        android:id="@+id/med_name_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Medication Name:"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        />
+    <TextView
+        android:id="@+id/med_name_value_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Hello"
+        android:textSize="14sp"
+        />
+    <TextView
+        android:id="@+id/med_type_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Medication Type:"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        />
+
+    <TextView
+        android:id="@+id/med_type_value_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="pills/syrup"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/med_notification_time_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notification Times:"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        />
+
+    <TextView
+        android:id="@+id/med_notification_time_value_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Times, Times"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/med_dosage_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Medication Dosage:"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        />
+    <TextView
+        android:id="@+id/med_dosage_value_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Hello"
+        android:textSize="14sp"
+        />
+
+
+
+</LinearLayout>
