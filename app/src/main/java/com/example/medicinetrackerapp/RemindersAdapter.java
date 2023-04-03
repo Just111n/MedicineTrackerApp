@@ -78,7 +78,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                    int position = getAdapterPosition();
                    String medName = med_name_value_text_view.getText().toString();
                    Intent intent = new Intent(context,ReminderEditorActivity.class);
-                   intent.putExtra(ReminderEditorActivity.ACTION_KEY,"UPDATE");
+                   intent.putExtra(ReminderEditorActivity.ACTION_KEY,ReminderEditorActivity.UPDATE);
                    intent.putExtra(ReminderEditorActivity.POSITION_KEY,position);
                    intent.putExtra(ReminderEditorActivity.MED_NAME_KEY,medName);
                    context.startActivity(intent);
@@ -95,6 +95,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                    new AlertDialog.Builder(context)
                            .setTitle("Are you sure?")
                            .setMessage("Do you want to delete this reminder?")
+                           .setIcon(R.drawable.ic_app)
                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                @Override
                                public void onClick(DialogInterface dialogInterface, int i) {

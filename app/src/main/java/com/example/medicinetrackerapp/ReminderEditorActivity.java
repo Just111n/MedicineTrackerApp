@@ -2,6 +2,8 @@ package com.example.medicinetrackerapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +21,9 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
     // CREATE, UPDATE, DELETE
     public final static String ACTION_KEY = "ACTION_KEY";
-
+    public final static String CREATE = "CREATE";
+    public final static String UPDATE = "UPDATE";
+    public final static String DELETE = "DELETE";
     public final static String MED_NAME_KEY = "MED_NAME_KEY";
     public final static String POSITION_KEY = "POSITION_KEY";
 
@@ -39,7 +43,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
         String medName = intent.getStringExtra(MED_NAME_KEY);
 
         // TODO SET DATA TO NOTE DATA
-        if (action.equals("UPDATE")) {
+        if (action.equals(UPDATE)) {
             editMedNameEditText.setText(medName);
         }
 
@@ -49,23 +53,20 @@ public class ReminderEditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String medName = editMedNameEditText.getText().toString();
-                Toast.makeText(getApplicationContext(), medName, Toast.LENGTH_LONG).show();
+                if (action.equals(CREATE)) {
+                    Toast.makeText(getApplicationContext(), medName  +" added successfully", Toast.LENGTH_LONG).show();
+                }
+                if (action.equals(UPDATE)) {
+                    Toast.makeText(getApplicationContext(), medName  +" updated successfully", Toast.LENGTH_LONG).show();
+                }
+
 
                 Intent intent = new Intent(ReminderEditorActivity.this, MainActivity.class);
 
-                if (action.equals("CREATE") ) {
-                    intent.putExtra(ACTION_KEY, "CREATE");
 
-
-                }
-
-                if (action.equals("UPDATE") ) {intent.putExtra(ACTION_KEY, "UPDATE");}
-
-
-
+                intent.putExtra(ACTION_KEY, action);
 
                 intent.putExtra(POSITION_KEY,position);
-
                 intent.putExtra(MED_NAME_KEY, medName);
 
                 startActivity(intent);
@@ -74,11 +75,22 @@ public class ReminderEditorActivity extends AppCompatActivity {
         deleteReminderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ReminderEditorActivity.this,MainActivity.class);
-                intent.putExtra(ACTION_KEY,"DELETE");
-                intent.putExtra(POSITION_KEY,position);
 
-                startActivity(intent);
+                new AlertDialog.Builder(ReminderEditorActivity.this)
+                        .setTitle("Are you sure?")
+                        .setMessage("Do you want to delete this reminder?")
+                        .setIcon(R.drawable.ic_app)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(ReminderEditorActivity.this,MainActivity.class);
+                                intent.putExtra(ACTION_KEY,DELETE);
+                                intent.putExtra(POSITION_KEY,position);
+                                startActivity(intent);
+
+                            }
+                        }).setNegativeButton("No",null).show();
+
             }
         });
     }
