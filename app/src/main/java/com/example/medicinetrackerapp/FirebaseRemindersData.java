@@ -46,9 +46,6 @@ public class FirebaseRemindersData implements RemindersDataSource {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 countListItems(snapshot);
                 repopulateList(snapshot);
-
-
-
             }
 
             @Override

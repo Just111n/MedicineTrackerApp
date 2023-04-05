@@ -102,6 +102,28 @@
 
         android:textColor="@color/black"
         android:textSize="20dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:id="@+id/med_notification_time_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pick time"
+            android:background="@drawable/rounded_corners"
+            android:layout_marginLeft="15dp"
+            />
+        <Button
+            android:id="@+id/med_notification_time_button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pick time"
+            android:background="@drawable/rounded_corners"
+            android:layout_marginLeft="15dp"
+            />
+    </LinearLayout>
 
 <!--    <LinearLayout-->
 <!--        android:layout_width="400dp"-->

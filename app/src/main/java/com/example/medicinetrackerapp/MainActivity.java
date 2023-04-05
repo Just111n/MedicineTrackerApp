@@ -102,11 +102,14 @@ public class MainActivity extends AppCompatActivity {
         // position == -2 => open app
         int position = intent.getIntExtra(ReminderEditorActivity.POSITION_KEY, -2);
         String newMedName = intent.getStringExtra(ReminderEditorActivity.MED_NAME_KEY);
+        ArrayList<String> medNotificatonTimes = intent.getStringArrayListExtra(ReminderEditorActivity.MED_NOTIFICATION_TIMES_KEY);
+
 
         if (action.equals(ReminderEditorActivity.CREATE) ) {
 
             Reminder reminder = new Reminder();
             reminder.setMedName(newMedName);
+            reminder.setMedNotificationTimes(medNotificatonTimes);
             remindersDataSource.addReminder(reminder);
             remindersAdapter.notifyDataSetChanged();
 
@@ -117,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
             Reminder reminder = remindersDataSource.getReminder(position);
 
             reminder.setMedName(newMedName);
+            reminder.setMedNotificationTimes(medNotificatonTimes);
             remindersDataSource.updateReminder(position, reminder);
             remindersAdapter.notifyDataSetChanged();
 
@@ -128,19 +132,7 @@ public class MainActivity extends AppCompatActivity {
             remindersAdapter.notifyItemRemoved(position);
 
 
-
         }
-
-
-
-
-
-
-
-
-
-
-
         addReminderFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

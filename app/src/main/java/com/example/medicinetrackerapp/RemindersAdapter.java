@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,9 @@ import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.RemindersHolder> {
 
@@ -41,6 +45,10 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         holder.getMed_name_value_text_view().setText(reminder.getMedName());
         holder.getMed_type_value_text_view().setText(reminder.getMedType());
         // TODO Notification Time
+        String medNotificationTimesText = reminder.getMedNotificationTimes().toString();
+        medNotificationTimesText = medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
+
+        holder.getMed_notification_time_value_text_view().setText(medNotificationTimesText);
         holder.getMed_dosage_value_text_view().setText(reminder.getMedDosage());
 
 
@@ -77,10 +85,21 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                public void onClick(View view) {
                    int position = getAdapterPosition();
                    String medName = med_name_value_text_view.getText().toString();
+                   String medNotificationTimesText = med_notification_time_value_text_view.getText().toString();
+                   // split on comma// remove square brackets
+
+                   String[] medNotificationTimesArray = medNotificationTimesText.split(",");
+                   ArrayList<String> medNotificationTimes = new ArrayList<>();
+                   for (String time : medNotificationTimesArray) {
+                       medNotificationTimes.add(time.trim());  // trim and add to list
+                   }
+
+
                    Intent intent = new Intent(context,ReminderEditorActivity.class);
                    intent.putExtra(ReminderEditorActivity.ACTION_KEY,ReminderEditorActivity.UPDATE);
                    intent.putExtra(ReminderEditorActivity.POSITION_KEY,position);
                    intent.putExtra(ReminderEditorActivity.MED_NAME_KEY,medName);
+                   intent.putExtra(ReminderEditorActivity.MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
                    context.startActivity(intent);
 
 

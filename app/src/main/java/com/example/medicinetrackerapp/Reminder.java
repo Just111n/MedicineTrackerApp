@@ -9,7 +9,7 @@ public class Reminder {
 
     private String medName;
     private String medType;
-    private ArrayList<LocalDateTime> medNotificationTimes;
+    private ArrayList<String> medNotificationTimes;
     private String medDosage;
 
     Reminder() {
@@ -46,11 +46,11 @@ public class Reminder {
         this.medType = medType;
     }
 
-    public ArrayList<LocalDateTime> getMedNotificationTimes() {
+    public ArrayList<String> getMedNotificationTimes() {
         return medNotificationTimes;
     }
 
-    public void setMedNotificationTimes(ArrayList<LocalDateTime> medNotificationTimes) {
+    public void setMedNotificationTimes(ArrayList<String> medNotificationTimes) {
         this.medNotificationTimes = medNotificationTimes;
     }
 
