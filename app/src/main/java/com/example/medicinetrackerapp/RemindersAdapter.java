@@ -100,7 +100,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                                @Override
                                public void onClick(DialogInterface dialogInterface, int i) {
                                    data.removeReminder(position);
-                                   notifyDataSetChanged();
+                                   notifyItemRemoved(position);
                                }
                            }).setNegativeButton("No",null).show();
 

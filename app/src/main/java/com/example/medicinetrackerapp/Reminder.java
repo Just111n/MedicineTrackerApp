@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 public class Reminder {
 
+    private String id;
+
     private String medName;
     private String medType;
     private ArrayList<LocalDateTime> medNotificationTimes;
@@ -18,6 +20,14 @@ public class Reminder {
 
 
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getMedName() {

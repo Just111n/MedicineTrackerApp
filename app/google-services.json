@@ -1,0 +1,114 @@
+{
+  "project_info": {
+    "project_number": "159207044284",
+    "firebase_url": "https://calendarapp-42571-default-rtdb.firebaseio.com",
+    "project_id": "calendarapp-42571",
+    "storage_bucket": "calendarapp-42571.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159207044284:android:4d38d986b14126550b0cb9",
+        "android_client_info": {
+          "package_name": "com.example.firebasecalendarapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMeTOJR-yrlZH2U_PcAd2JOtGld96XAH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159207044284:android:ee75d0baa1298af10b0cb9",
+        "android_client_info": {
+          "package_name": "com.example.firebaserecyclerviewtesting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159207044284-3tql1rgbdm97rqnqe5ocdrss63alvhlk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.firebaserecyclerviewtesting",
+            "certificate_hash": "9c4acd6cd7789a64825018b8f452f0e4e0f7bcd9"
+          }
+        },
+        {
+          "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMeTOJR-yrlZH2U_PcAd2JOtGld96XAH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159207044284:android:f34d73b9c90990760b0cb9",
+        "android_client_info": {
+          "package_name": "com.example.medicinetrackerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159207044284-iu1bqd8brofeab3nkhvvfbihich8r0ld.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.medicinetrackerapp",
+            "certificate_hash": "9c4acd6cd7789a64825018b8f452f0e4e0f7bcd9"
+          }
+        },
+        {
+          "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMeTOJR-yrlZH2U_PcAd2JOtGld96XAH8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

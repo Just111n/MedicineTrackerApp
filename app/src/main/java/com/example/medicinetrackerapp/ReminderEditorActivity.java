@@ -45,6 +45,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
         // TODO SET DATA TO NOTE DATA
         if (action.equals(UPDATE)) {
             editMedNameEditText.setText(medName);
+            addReminderButton.setText("Update Reminder");
         }
 
 

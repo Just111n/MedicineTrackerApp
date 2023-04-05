@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     RemindersDataSource remindersDataSource;
 
+    RecyclerView.Adapter<RemindersAdapter.RemindersHolder> remindersAdapter;
+
     // Creating options Menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -49,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
             // Going from MainActivity to NotesEditorActivity
 //            Intent intent = new Intent(getApplicationContext(), NoteEditorActivity.class);
 //            startActivity(intent);
+            Toast.makeText(this, "Dummy menu item 2 is clicked!", Toast.LENGTH_SHORT).show();
 
-            Toast.makeText(this, "Dummy menu item 1 is clicked!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, String.valueOf(remindersDataSource.getSize()), Toast.LENGTH_SHORT).show();
+
             return true;
         }
         if (item.getItemId() == R.id.dummy2) {
@@ -77,10 +81,11 @@ public class MainActivity extends AppCompatActivity {
 
         // initialize the reminders data source, remindersList is a private static variable
         remindersDataSource = new LocalRemindersData();
+//        remindersDataSource = new FirebaseRemindersData();
+        remindersAdapter = new RemindersAdapter(this, remindersDataSource);
 
-        RecyclerView.Adapter<RemindersAdapter.RemindersHolder> remindersAdapter
-                = new RemindersAdapter(this, remindersDataSource);
         remindersRecyclerView.setAdapter(remindersAdapter);
+
         remindersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
@@ -120,11 +125,20 @@ public class MainActivity extends AppCompatActivity {
 
         if (action.equals(ReminderEditorActivity.DELETE) && position>=0) {
             remindersDataSource.removeReminder(position);
-            remindersAdapter.notifyDataSetChanged();
+            remindersAdapter.notifyItemRemoved(position);
 
 
 
         }
+
+
+
+
+
+
+
+
+
 
 
         addReminderFab.setOnClickListener(new View.OnClickListener() {
@@ -139,4 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
 }
