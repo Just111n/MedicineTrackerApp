@@ -26,17 +26,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class FirebaseRemindersData implements RemindersDataSource {
 
-
-    private static final String FIREBASE_TESTING = "FIREBASE_TESTING" ;
-    private DatabaseReference databaseReference;
+    public static final String FIREBASE_TESTING = "FIREBASE_TESTING";
+    private static FirebaseRemindersData instance;
+    private static DatabaseReference databaseReference;
     private static ArrayList<Reminder> remindersList = new ArrayList<>();
 
-
-    int size;
-
-    public FirebaseRemindersData() {
-
+    private FirebaseRemindersData() {
         databaseReference = FirebaseDatabase.getInstance().getReference("reminders");
+
 
 
         // Attach a value event listener to the database reference
@@ -46,6 +43,7 @@ public class FirebaseRemindersData implements RemindersDataSource {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 countListItems(snapshot);
                 repopulateList(snapshot);
+                Log.d(FIREBASE_TESTING,"onDataChange is called");
             }
 
             @Override
@@ -53,6 +51,13 @@ public class FirebaseRemindersData implements RemindersDataSource {
                 Log.d("FirebaseRemindersData", "onCancelled: " + error.getMessage());
             }
         });
+    }
+
+    public static FirebaseRemindersData getInstance() {
+        if (instance == null) {
+            instance = new FirebaseRemindersData();
+        }
+        return instance;
     }
 
     @Override
@@ -93,115 +98,42 @@ public class FirebaseRemindersData implements RemindersDataSource {
         return remindersList.size();
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+
+        String output = "";
+        for (Reminder reminder:remindersList) {
+            output = output + reminder.getMedName() + "\n";
+            String medNotificationTimesText = reminder.getMedNotificationTimes().toString();
+            output = output + medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
+
+
+            output = output + "\n\n";
+        }
+
+
+
+        return output;
+    }
+
+
 
     private void countListItems(DataSnapshot snapshot){
-         size = (int) snapshot.getChildrenCount();
+        int size = (int) snapshot.getChildrenCount();
+        Log.d(FIREBASE_TESTING, "constructor size " + size);
+    }
 
-         Log.d(FIREBASE_TESTING, "constructor size " + size);
-        }
     private void repopulateList(DataSnapshot snapshot){
-        remindersList = new ArrayList<>();
+        remindersList.clear();
         for(DataSnapshot dataSnapshot: snapshot.getChildren()){
             Reminder reminder = dataSnapshot.getValue(Reminder.class);
             remindersList.add(reminder);
-
-            }
-
         }
+    }
+
+
 }
 
 
 
-
-
-//    public class FirebaseRemindersData implements RemindersDataSource {
-//
-//        public static final String FIREBASE_TESTING = "FirebaseTesting";
-//        DatabaseReference databaseReference;
-//        DatabaseReference remindersDatabaseReference;
-//        int size;
-//        List<Reminder> remindersList;
-//
-//        FirebaseRemindersData(){
-//
-//            databaseReference = FirebaseDatabase.getInstance().getReference();
-//            remindersDatabaseReference = databaseReference.child("medicine");
-//
-//            remindersDatabaseReference.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    countListItems(snapshot);
-//                    repopulateList(snapshot);
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//
-//
-//        }
-//
-//        private void countListItems(DataSnapshot snapshot){
-//            size = (int) snapshot.getChildrenCount();
-//
-//            Log.d(FIREBASE_TESTING, "constructor size " + size);
-//        }
-//
-//        private void repopulateList(DataSnapshot snapshot){
-//            remindersList = new ArrayList<>();
-//            for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-//                Reminder reminder = dataSnapshot.getValue(Reminder.class);
-//                remindersList.add(reminder);
-////            Log.d(FIREBASE_TESTING, dataSnapshot.getValue(Reminder.class));
-//            }
-//        }
-//        @Override
-//        public void addReminder(Reminder reminder) {
-//            remindersDatabaseReference.push().setValue(reminder);
-//            Log.d(FIREBASE_TESTING, "add word size " + size);
-//
-//        }
-//
-//        @Override
-//        public Reminder getReminder(int i) {
-//            return remindersList.get(i);
-//        }
-//
-//        @Override
-//        public void updateReminder(int index, Reminder reminder) {
-//
-//        }
-//
-//        @Override
-//        public void removeReminder(int i) {
-//
-//            Reminder reminder = remindersList.get(i);
-////
-//            remindersDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-//                        if( dataSnapshot.getValue().toString().equals(reminder) ){
-////                        Log.d(FIREBASE_TESTING, "word:" + reminder + dataSnapshot.getValue().toString());
-//                            remindersDatabaseReference.child(dataSnapshot.getKey()).removeValue();
-//
-//                        }
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//
-//        }
-//
-//        @Override
-//        public int getSize() {
-//            return size;
-//        }

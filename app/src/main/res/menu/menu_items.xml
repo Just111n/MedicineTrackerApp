@@ -4,6 +4,6 @@
     <item android:id="@+id/profile_menu_item"
         android:title="Profile"
        ></item>
-    <item android:id="@+id/dummy2" android:title="Dummy menu item2"></item>
+    <item android:id="@+id/copy_menu_item" android:title="Copy Data"></item>
 
 </menu>

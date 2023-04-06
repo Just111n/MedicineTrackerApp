@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
@@ -41,15 +42,19 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
 
     @Override
     public void onBindViewHolder(@NonNull RemindersAdapter.RemindersHolder holder, int position) {
+
+        // TODO 1.3 Read data in MainActivity
         Reminder reminder = data.getReminder(position);
+
         holder.getMed_name_value_text_view().setText(reminder.getMedName());
         holder.getMed_type_value_text_view().setText(reminder.getMedType());
-        // TODO Notification Time
+
         String medNotificationTimesText = reminder.getMedNotificationTimes().toString();
         medNotificationTimesText = medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
 
         holder.getMed_notification_time_value_text_view().setText(medNotificationTimesText);
         holder.getMed_dosage_value_text_view().setText(reminder.getMedDosage());
+
 
 
     }
@@ -63,14 +68,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
 
         private View itemView;
 
-        private TextView med_name_value_text_view;
-        private TextView med_type_value_text_view;
-        private TextView med_notification_time_value_text_view;
-        private TextView med_dosage_value_text_view;
-
-
-
-
+        private TextView med_name_value_text_view, med_type_value_text_view, med_notification_time_value_text_view, med_dosage_value_text_view;
 
 
         public RemindersHolder(@NonNull View itemView) {
@@ -80,13 +78,14 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
             med_type_value_text_view = itemView.findViewById(R.id.med_type_value_text_view);
             med_notification_time_value_text_view = itemView.findViewById(R.id.med_notification_time_value_text_view);
             med_dosage_value_text_view = itemView.findViewById(R.id.med_dosage_value_text_view);
+
            itemView.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View view) {
                    int position = getAdapterPosition();
                    String medName = med_name_value_text_view.getText().toString();
+
                    String medNotificationTimesText = med_notification_time_value_text_view.getText().toString();
-                   // split on comma// remove square brackets
 
                    String[] medNotificationTimesArray = medNotificationTimesText.split(",");
                    ArrayList<String> medNotificationTimes = new ArrayList<>();
@@ -95,6 +94,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                    }
 
 
+                   // TODO 1.4 Send data to ReminderEditorActivity
                    Intent intent = new Intent(context,ReminderEditorActivity.class);
                    intent.putExtra(ReminderEditorActivity.ACTION_KEY,ReminderEditorActivity.UPDATE);
                    intent.putExtra(ReminderEditorActivity.POSITION_KEY,position);
@@ -131,7 +131,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
 
         }
 
-
+        /* View Getters Section */
         public View getItemView() {
             return itemView;
         }
@@ -151,6 +151,9 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         public TextView getMed_dosage_value_text_view() {
             return med_dosage_value_text_view;
         }
+        /* End View Getters Section */
+
+
 
      
     }

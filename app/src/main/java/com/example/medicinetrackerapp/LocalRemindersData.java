@@ -1,23 +1,27 @@
 package com.example.medicinetrackerapp;
 
-import android.widget.TextView;
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-public class LocalRemindersData implements RemindersDataSource{
+public class LocalRemindersData implements RemindersDataSource {
 
+    private static LocalRemindersData instance;
     private static ArrayList<Reminder> remindersList = new ArrayList<>();
 
-    public LocalRemindersData() {
+    private LocalRemindersData() {
     }
 
-
-
+    public static LocalRemindersData getInstance() {
+        if (instance == null) {
+            instance = new LocalRemindersData();
+        }
+        return instance;
+    }
 
     @Override
     public void addReminder(Reminder reminder) {
         remindersList.add(reminder);
-
     }
 
     @Override
@@ -27,18 +31,36 @@ public class LocalRemindersData implements RemindersDataSource{
 
     @Override
     public void updateReminder(int index, Reminder reminder) {
-        remindersList.set(index,reminder);
-
+        remindersList.set(index, reminder);
     }
 
     @Override
     public void removeReminder(int i) {
         remindersList.remove(i);
-
     }
 
     @Override
     public int getSize() {
         return remindersList.size();
+    }
+
+
+    @NonNull
+    @Override
+    public String toString() {
+
+        String output = "";
+        for (Reminder reminder:remindersList) {
+            output = output + reminder.getMedName() + "\n";
+            String medNotificationTimesText = reminder.getMedNotificationTimes().toString();
+            output = output + medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
+
+
+            output = output + "\n\n";
+        }
+
+
+
+        return output;
     }
 }

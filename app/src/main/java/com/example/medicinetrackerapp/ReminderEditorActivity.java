@@ -2,40 +2,43 @@ package com.example.medicinetrackerapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ReminderEditorActivity extends AppCompatActivity {
 
-    Button medNotificationTimeButton;
-    Button medNotificationTimeButton2;
-    Button addReminderButton;
-    Button deleteReminderButton;
+    /* Views Section */
+    Button medNotificationTimeButton, medNotificationTimeButton2, addReminderButton, deleteReminderButton;
     EditText editMedNameEditText;
 
     String notificationTime;
+    /* End Views Section */
 
 
+    public final static String ACTION_KEY = "ACTION_KEY", CREATE = "CREATE", UPDATE = "UPDATE", DELETE = "DELETE";
 
-    // CREATE, UPDATE, DELETE
-    public final static String ACTION_KEY = "ACTION_KEY";
-    public final static String CREATE = "CREATE";
-    public final static String UPDATE = "UPDATE";
-    public final static String DELETE = "DELETE";
     public final static String MED_NAME_KEY = "MED_NAME_KEY";
     public final static String POSITION_KEY = "POSITION_KEY";
-
     public final static String MED_NOTIFICATION_TIMES_KEY = "NOTIFICATION_TIME_KEY";
 
 
@@ -61,18 +64,13 @@ public class ReminderEditorActivity extends AppCompatActivity {
         // TODO SET DATA TO NOTE DATA
         if (action.equals(UPDATE)) {
             editMedNameEditText.setText(medName);
-
             medNotificationTimeButton.setText(medNotificationTimes.get(0));
             medNotificationTimeButton2.setText(medNotificationTimes.get(1));
-
-
             addReminderButton.setText("Update Reminder");
 
         }
 
-
-
-
+        /* Button Functionality Section */
         medNotificationTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,6 +92,11 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 String medName = editMedNameEditText.getText().toString();
                 String medNotificationTime = medNotificationTimeButton.getText().toString().trim();
                 String medNotificationTime2 = medNotificationTimeButton2.getText().toString().trim();
+                try {
+                    setAlarm(medName, medNotificationTime);
+                } catch (ParseException e) {
+                    Log.d("testing","error");
+                }
 
 
                 ArrayList<String> medNotificationTimes = new ArrayList<>();
@@ -111,14 +114,14 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 }
 
 
+                // TODO 1.0 submit data from ReminderEditorActivity to MainActivity
                 Intent intent = new Intent(ReminderEditorActivity.this, MainActivity.class);
-
-
                 intent.putExtra(ACTION_KEY, action);
-
                 intent.putExtra(POSITION_KEY,position);
                 intent.putExtra(MED_NAME_KEY, medName);
                 intent.putExtra(MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
+
+
                 startActivity(intent);
             }});
 
@@ -143,9 +146,11 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
             }
         });
+        /* End Button Functionality Section */
 
     }
 
+    /* Select Time Section */
     private void selectTime(Button button) {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -186,6 +191,38 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
         return time;
+    }
+    /* End Select Time Section */
+
+    private void setAlarm(String medName, String time) throws ParseException {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);   //assigining alaram manager object to set alaram
+
+        //sending data to alarm class to create channel and notification
+        Intent intent = new Intent(getApplicationContext(), AlarmBroadcast.class);
+        intent.putExtra(AlarmBroadcast.Event_KEY, medName);
+        Log.d("testing","setAlarm can accesss medName:"+medName);
+
+
+        intent.putExtra("time", time);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        // TODO notifications are instant pop off
+
+        Calendar calendar = Calendar.getInstance();
+
+
+//        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+//        int minute = calendar.get(Calendar.MINUTE);
+//        calendar.set(Calendar.HOUR_OF_DAY, hour);
+//        calendar.set(Calendar.MINUTE, minute);
+        Date date1 = calendar.getTime();
+
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, date1.getTime(), pendingIntent);
+
+
+
     }
 
 

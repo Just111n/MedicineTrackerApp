@@ -23,17 +23,18 @@
         android:layout_height="170dp"
         android:src="@drawable/ic_reminder_editor" />
     <TextView
-        android:layout_width="166dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Medicine Name"
         android:layout_marginLeft="15dp"
         android:layout_marginBottom="5dp"
         android:textColor="@color/black"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        />
     <EditText
         android:id="@+id/edit_medName_editText"
-        android:layout_width="332dp"
-        android:layout_height="35dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="Enter medicine name"
         android:background="@drawable/rounded_corners"
         android:backgroundTint="#FFFBE3E3"
@@ -42,7 +43,8 @@
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="#A1000000"
-        android:textSize="16dp"
+        android:textSize="20dp"
+        android:layout_gravity="center"
         />
 
     <TextView
@@ -246,7 +248,7 @@
         android:layout_width="242dp"
         android:layout_height="50dp"
         android:background="@drawable/rounded_corners"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:backgroundTint="#4F517D"
         android:text="Add Reminder"
@@ -255,21 +257,21 @@
         android:textAllCaps="false"
 
         />
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/delete_reminder_button"
         android:layout_width="242dp"
         android:layout_height="50dp"
-        android:background="@drawable/rounded_corners"
-        android:layout_marginTop="10dp"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_corners"
         android:backgroundTint="#87202f"
         android:text="Delete Reminder"
-        android:textSize="18dp"
-        android:textColor="@color/white"
         android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18dp"
 
         />
-
 
 
 </LinearLayout>
