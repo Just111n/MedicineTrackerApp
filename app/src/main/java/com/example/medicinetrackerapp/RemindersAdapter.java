@@ -55,6 +55,15 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         holder.getMed_notification_time_value_text_view().setText(medNotificationTimesText);
         holder.getMed_dosage_value_text_view().setText(reminder.getMedDosage());
 
+        holder.getMed_info_button().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, DrugView.class);
+                intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminder.getMedName());
+                context.startActivity(intent);
+            }
+        });
+
 
 
     }
@@ -70,6 +79,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
 
         private TextView med_name_value_text_view, med_type_value_text_view, med_notification_time_value_text_view, med_dosage_value_text_view;
 
+        private Button med_info_button;
 
         public RemindersHolder(@NonNull View itemView) {
             super(itemView);
@@ -78,6 +88,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
             med_type_value_text_view = itemView.findViewById(R.id.med_type_value_text_view);
             med_notification_time_value_text_view = itemView.findViewById(R.id.med_notification_time_value_text_view);
             med_dosage_value_text_view = itemView.findViewById(R.id.med_dosage_value_text_view);
+            med_info_button = itemView.findViewById(R.id.med_info_button);
 
            itemView.setOnClickListener(new View.OnClickListener() {
                @Override
@@ -151,6 +162,10 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         public TextView getMed_dosage_value_text_view() {
             return med_dosage_value_text_view;
         }
+
+        public Button getMed_info_button() {return med_info_button;}
+
+
         /* End View Getters Section */
 
 
