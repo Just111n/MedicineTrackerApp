@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_margin="8dp"
+    android:orientation="vertical"
+    tools:context=".DrugView"
+    android:background="#FFF8F8"
+    >
+
+    <ImageView
+        android:id="@+id/drug_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="DrugImage"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:src="@drawable/drug_image_size" />
+
+    <TextView
+        android:id="@+id/drug_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="Drug's name"
+        android:textSize="35dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginLeft="20dp" />
+
+    <LinearLayout
+        android:layout_height="60dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_margin="15dp"
+        tools:context=".MainActivity">
+
+        <Button
+            android:id="@+id/after_breakfast"
+            android:text="After Breakfast"
+            android:textAllCaps="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="12dp"
+            android:paddingHorizontal="20dp"
+            android:layout_marginLeft="30dp"
+            />
+
+
+        <Button
+            android:id="@+id/after_dinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="After Dinner"
+            android:textAllCaps="false"
+            android:textSize="12dp"
+            android:paddingHorizontal="35dp"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/about_drug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="2dp"
+        android:text="About Drug"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/drug_description"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:layout_margin="10dp"
+        android:text="drug info"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        tools:context=".MainActivity">
+
+        <Button
+            android:id="@+id/dosage_button"
+            android:layout_width="145dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="40dp"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/drug_icon_smaller"
+            android:padding="10dp"
+            android:text="2.5mg Dosage"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textAllCaps = "false"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/schedule_button"
+            android:layout_width="145dp"
+            android:layout_height="90dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="40dp"
+            android:drawableLeft="@drawable/time_icon_smaller"
+            android:padding="10dp"
+            android:text="2x Pill Each Day"
+            android:textColor="@color/white"
+            android:textSize="15dp"
+            android:textAllCaps="false"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
