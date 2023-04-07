@@ -14,33 +14,40 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
-public class ReminderEditorActivity extends AppCompatActivity {
+public class ReminderEditorActivity extends AppCompatActivity implements View.OnClickListener {
 
     /* Views Section */
     Button medNotificationTimeButton, medNotificationTimeButton2, addReminderButton, deleteReminderButton;
     EditText editMedNameEditText;
 
+    ImageButton pills_ImageButton;
+    ImageButton syrup_ImageButton;
+    ImageButton injection_ImageButton;
     String notificationTime;
     /* End Views Section */
+
+    String medType;
+    EditText editDosageEditText;
+
 
 
     public final static String ACTION_KEY = "ACTION_KEY", CREATE = "CREATE", UPDATE = "UPDATE", DELETE = "DELETE";
 
-    public final static String MED_NAME_KEY = "MED_NAME_KEY";
+    public final static String MED_NAME_KEY = "MED_NAME_KEY";// ASK WHAT THIS IS
     public final static String POSITION_KEY = "POSITION_KEY";
     public final static String MED_NOTIFICATION_TIMES_KEY = "NOTIFICATION_TIME_KEY";
 
+    public final static  String MED_DOSAGE_KEY = "MED_DOSAGE_KEY";
+    public  final static String MED_TYPE_KEY = "MED_TYPE_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,23 +56,33 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
         editMedNameEditText = findViewById(R.id.edit_medName_editText);
+        pills_ImageButton = findViewById(R.id.pills_ImageButton);
+        syrup_ImageButton = findViewById(R.id.syrup_ImageButton);
+        injection_ImageButton = findViewById(R.id.injection_ImageButton);
+        editDosageEditText = findViewById(R.id.Dosage_edittext);
         medNotificationTimeButton = findViewById(R.id.med_notification_time_button);
         medNotificationTimeButton2 = findViewById(R.id.med_notification_time_button2);
         addReminderButton = findViewById(R.id.add_reminder_button);
         deleteReminderButton = findViewById(R.id.delete_reminder_button);
 
+
         Intent intent = getIntent();
         String action = intent.getStringExtra(ACTION_KEY);
         int position = intent.getIntExtra(POSITION_KEY,-1);
         ArrayList<String> medNotificationTimes = intent.getStringArrayListExtra(MED_NOTIFICATION_TIMES_KEY);
+        String medName = intent.getStringExtra(MED_NAME_KEY);//ASK what does this do
+        String medType = intent.getStringExtra(MED_TYPE_KEY);
+        String medDosage = intent.getStringExtra(MED_DOSAGE_KEY);
 
-        String medName = intent.getStringExtra(MED_NAME_KEY);
 
         // TODO SET DATA TO NOTE DATA
         if (action.equals(UPDATE)) {
             editMedNameEditText.setText(medName);
             medNotificationTimeButton.setText(medNotificationTimes.get(0));
             medNotificationTimeButton2.setText(medNotificationTimes.get(1));
+            medType.trim();
+            editDosageEditText.setText(medDosage);
+
             addReminderButton.setText("Update Reminder");
 
         }
@@ -84,6 +101,10 @@ public class ReminderEditorActivity extends AppCompatActivity {
             }
         });
 
+        pills_ImageButton.setOnClickListener(this);
+        syrup_ImageButton.setOnClickListener(this);
+        injection_ImageButton.setOnClickListener(this);
+
 
 
         addReminderButton.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +113,8 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 String medName = editMedNameEditText.getText().toString();
                 String medNotificationTime = medNotificationTimeButton.getText().toString().trim();
                 String medNotificationTime2 = medNotificationTimeButton2.getText().toString().trim();
+                String medType = ReminderEditorActivity.this.medType.toString();
+                String medDosage = editDosageEditText.getText().toString();
                 try {
                     setAlarm(medName, medNotificationTime);
                 } catch (ParseException e) {
@@ -120,7 +143,8 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 intent.putExtra(POSITION_KEY,position);
                 intent.putExtra(MED_NAME_KEY, medName);
                 intent.putExtra(MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
-
+                intent.putExtra(MED_TYPE_KEY, medType);
+                intent.putExtra(MED_DOSAGE_KEY, medDosage);
 
                 startActivity(intent);
             }});
@@ -148,6 +172,24 @@ public class ReminderEditorActivity extends AppCompatActivity {
         });
         /* End Button Functionality Section */
 
+    }// END of onCreate
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.pills_ImageButton:
+                Toast.makeText(this, "Medicine is a pill", Toast.LENGTH_SHORT).show();
+                medType = "Pills";
+                break;
+            case R.id.syrup_ImageButton:
+                Toast.makeText(this, "Medicine is syrup type", Toast.LENGTH_SHORT).show();
+                medType ="Syrup";
+                break;
+            case R.id.injection_ImageButton:
+                Toast.makeText(this, "Medicine is an injection", Toast.LENGTH_SHORT).show();
+                medType = "Injection";
+                break;
+        }
     }
 
     /* Select Time Section */
@@ -188,8 +230,6 @@ public class ReminderEditorActivity extends AppCompatActivity {
             int temp = hour - 12;
             time = temp + ":" + formattedMinute + " PM";
         }
-
-
         return time;
     }
     /* End Select Time Section */

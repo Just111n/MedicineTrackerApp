@@ -118,7 +118,8 @@ public class MainActivity extends AppCompatActivity {
         int position = intent.getIntExtra(ReminderEditorActivity.POSITION_KEY, -2);
         String newMedName = intent.getStringExtra(ReminderEditorActivity.MED_NAME_KEY);
         ArrayList<String> medNotificationTimes = intent.getStringArrayListExtra(ReminderEditorActivity.MED_NOTIFICATION_TIMES_KEY);
-
+        String medType = intent.getStringExtra(ReminderEditorActivity.MED_TYPE_KEY);
+        String medDosage = intent.getStringExtra(ReminderEditorActivity.MED_DOSAGE_KEY);
 
         if (action == null) {
             action = "OPEN_APP";
@@ -129,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
                 Reminder newReminder = new Reminder();
                 newReminder.setMedName(newMedName);
                 newReminder.setMedNotificationTimes(medNotificationTimes);
+                newReminder.setMedDosage(medDosage);
+                newReminder.setMedType(medType);
                 remindersDataSource.addReminder(newReminder);
                 remindersAdapter.notifyDataSetChanged();
                 break;
@@ -137,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 Reminder reminder = remindersDataSource.getReminder(position);
                 reminder.setMedName(newMedName);
                 reminder.setMedNotificationTimes(medNotificationTimes);
+                reminder.setMedType(medType);
+                reminder.setMedDosage(medDosage);
                 remindersDataSource.updateReminder(position, reminder);
                 remindersAdapter.notifyItemChanged(position);
                 break;
@@ -145,10 +150,8 @@ public class MainActivity extends AppCompatActivity {
                 if (position >= 0) {
                     remindersDataSource.removeReminder(position);
                     remindersAdapter.notifyItemRemoved(position);
-
                 }
                 break;
-
 
         }
         /* End Check action Section */

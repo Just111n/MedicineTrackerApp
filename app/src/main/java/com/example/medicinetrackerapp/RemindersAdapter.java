@@ -92,6 +92,10 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                    for (String time : medNotificationTimesArray) {
                        medNotificationTimes.add(time.trim());  // trim and add to list
                    }
+                   String medType = med_type_value_text_view.getText().toString();
+                   String medDosage = med_dosage_value_text_view.getText().toString();
+
+
 
 
                    // TODO 1.4 Send data to ReminderEditorActivity
@@ -100,6 +104,8 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                    intent.putExtra(ReminderEditorActivity.POSITION_KEY,position);
                    intent.putExtra(ReminderEditorActivity.MED_NAME_KEY,medName);
                    intent.putExtra(ReminderEditorActivity.MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
+                   intent.putExtra(ReminderEditorActivity.MED_TYPE_KEY, medType);
+                   intent.putExtra(ReminderEditorActivity.MED_DOSAGE_KEY, medDosage);
                    context.startActivity(intent);
 
 
