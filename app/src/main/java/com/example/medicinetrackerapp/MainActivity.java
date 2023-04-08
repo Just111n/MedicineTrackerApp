@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,7 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     final static String CLIPBOARD_LABEL = "CLIPBOARD_LABEL";
     RecyclerView remindersRecyclerView;
-    RecyclerView.Adapter<RemindersAdapter.RemindersHolder> remindersAdapter;
+    RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> remindersAdapter;
     FloatingActionButton addReminderFab;
 
     RemindersDataSource remindersDataSource = LocalRemindersData.getInstance();

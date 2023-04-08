@@ -1,27 +1,21 @@
 package com.example.medicinetrackerapp;
 
-import static androidx.core.content.ContextCompat.startActivity;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.RemindersHolder> {
+public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> {
 
     LayoutInflater mInflater;
     Context context;
@@ -35,34 +29,38 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
 
     @NonNull
     @Override
-    public RemindersAdapter.RemindersHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ReminderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.reminder_list_item, parent, false);
-        return new RemindersHolder(itemView);
+        return new ReminderViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RemindersAdapter.RemindersHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ReminderViewHolder holder, int position) {
 
-        // TODO 1.3 Read data in MainActivity
-        Reminder reminder = data.getReminder(position);
 
-        holder.getMed_name_value_text_view().setText(reminder.getMedName());
-        holder.getMed_type_value_text_view().setText(reminder.getMedType());
+            // TODO 1.3 Read data in MainActivity
+            Reminder reminder = data.getReminder(position);
 
-        String medNotificationTimesText = reminder.getMedNotificationTimes().toString();
-        medNotificationTimesText = medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
+            holder.getMed_name_value_text_view().setText(reminder.getMedName());
+            holder.getMed_type_value_text_view().setText(reminder.getMedType());
 
-        holder.getMed_notification_time_value_text_view().setText(medNotificationTimesText);
-        holder.getMed_dosage_value_text_view().setText(reminder.getMedDosage());
+            String medNotificationTimesText = reminder.getMedNotificationTimes().toString();
+            medNotificationTimesText = medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
 
-        holder.getMed_info_button().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, DrugView.class);
-                intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminder.getMedName());
-                context.startActivity(intent);
+            holder.getMed_notification_time_value_text_view().setText(medNotificationTimesText);
+            holder.getMed_dosage_value_text_view().setText(reminder.getMedDosage());
+
+            holder.getMed_info_button().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, DrugView.class);
+                    intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminder.getMedName());
+                    context.startActivity(intent);
+                }
             }
-        });
+        
+
+        );
 
 
 
@@ -73,7 +71,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
         return data.getSize();
     }
 
-    class RemindersHolder extends RecyclerView.ViewHolder {
+    class ReminderViewHolder extends RecyclerView.ViewHolder {
 
         private View itemView;
 
@@ -81,7 +79,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
 
         private Button med_info_button;
 
-        public RemindersHolder(@NonNull View itemView) {
+        public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
             med_name_value_text_view = itemView.findViewById(R.id.med_name_value_text_view);
