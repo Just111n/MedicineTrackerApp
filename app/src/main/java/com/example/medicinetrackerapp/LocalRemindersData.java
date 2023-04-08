@@ -51,12 +51,13 @@ public class LocalRemindersData implements RemindersDataSource {
 
         String output = "";
         for (Reminder reminder:remindersList) {
-            output = output + reminder.getMedName() + "\n";
+            output += reminder.getMedName() + "\n";
+            output += reminder.getMedType() + "\n";
             String medNotificationTimesText = reminder.getMedNotificationTimes().toString();
-            output = output + medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
+            output += medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1) + "\n";
+            output += reminder.getMedDosage() +"\n";
 
-
-            output = output + "\n\n";
+            output += "\n";
         }
 
 

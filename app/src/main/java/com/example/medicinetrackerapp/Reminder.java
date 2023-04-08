@@ -13,12 +13,6 @@ public class Reminder {
     private String medDosage;
 
     Reminder() {
-//        this.medName = "Paracetemol";
-//        this.medType = "tablet";
-//        // TODO Reminder Class, add medNotificationTime
-//        this.medDosage = "2 Tablets";
-
-
 
     }
 

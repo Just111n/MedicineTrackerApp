@@ -18,7 +18,7 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
     public final static String Event_KEY = "EVENT_KEY";
     public final static String TIME_KEY = "TIME_KEY";
-    public final static String CHANNEL_ID = "CHANNEL_ID";
+
 
 
 
@@ -27,7 +27,7 @@ public class AlarmBroadcast extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();
         String text = bundle.getString(Event_KEY);
         String date = bundle.getString(TIME_KEY);
-        Log.d("testing","AlarmBroadcast received event:"+text);
+        Log.d("testing","AlarmBroadcast received time:"+date);
 
 
 
@@ -43,10 +43,10 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
         //here we set all the properties for the notification
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
-        // TODO What the statemnt below is doing??
+        // TODO What the statement below is doing??
         contentView.setImageViewResource(R.id.icon, R.mipmap.ic_launcher);
         PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        contentView.setOnClickPendingIntent(R.id.flashButton, pendingSwitchIntent);
+//        contentView.setOnClickPendingIntent(R.id.flashButton, pendingSwitchIntent);
         contentView.setTextViewText(R.id.message, text);
         contentView.setTextViewText(R.id.date, date);
         mBuilder.setSmallIcon(R.drawable.alarm);
@@ -61,6 +61,7 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
         //we have to create notification channel after api level 26
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String CHANNEL_ID = "CHANNEL_ID";
 
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "channel name", NotificationManager.IMPORTANCE_HIGH);
             channel.enableVibration(true);
@@ -69,7 +70,8 @@ public class AlarmBroadcast extends BroadcastReceiver {
         }
 
         Notification notification = mBuilder.build();
-        notificationManager.notify(1, notification);
+        int notificationId = 1;
+        notificationManager.notify(notificationId, notification);
 
 
     }

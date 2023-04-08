@@ -1,7 +1,5 @@
 package com.example.medicinetrackerapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -9,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,24 +17,26 @@ import android.widget.ImageButton;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ReminderEditorActivity extends AppCompatActivity implements View.OnClickListener {
+public class ReminderEditorActivity extends AppCompatActivity {
 
     /* Views Section */
     Button medNotificationTimeButton, medNotificationTimeButton2, addReminderButton, deleteReminderButton;
     EditText editMedNameEditText;
 
-    ImageButton pills_ImageButton;
-    ImageButton syrup_ImageButton;
-    ImageButton injection_ImageButton;
+    ImageButton pills_ImageButton, syrup_ImageButton, injection_ImageButton;
+
     String notificationTime;
     /* End Views Section */
 
-    String medType;
+
     EditText editDosageEditText;
 
 
@@ -48,6 +49,11 @@ public class ReminderEditorActivity extends AppCompatActivity implements View.On
 
     public final static  String MED_DOSAGE_KEY = "MED_DOSAGE_KEY";
     public  final static String MED_TYPE_KEY = "MED_TYPE_KEY";
+
+    boolean isPillsButtonClicked = false;
+    boolean isSyrupButtonClicked = false;
+    boolean isInjectionButtonClicked = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +86,21 @@ public class ReminderEditorActivity extends AppCompatActivity implements View.On
             editMedNameEditText.setText(medName);
             medNotificationTimeButton.setText(medNotificationTimes.get(0));
             medNotificationTimeButton2.setText(medNotificationTimes.get(1));
-            medType.trim();
+            switch (medType) {
+                case "pills":
+                    pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+
+                    break;
+                case "syrup":
+                    syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+
+                    break;
+                case "injection":
+                    injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+
+                    break;
+
+            }
             editDosageEditText.setText(medDosage);
 
             addReminderButton.setText("Update Reminder");
@@ -100,10 +120,83 @@ public class ReminderEditorActivity extends AppCompatActivity implements View.On
                 selectTime(medNotificationTimeButton2);
             }
         });
+        // TODO Image Buttons
 
-        pills_ImageButton.setOnClickListener(this);
-        syrup_ImageButton.setOnClickListener(this);
-        injection_ImageButton.setOnClickListener(this);
+
+        pills_ImageButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if (!isPillsButtonClicked) {
+                    // If the button is already clicked, set the background color to the original color
+                    isPillsButtonClicked = true;
+                    pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+
+
+                    isSyrupButtonClicked = false;
+                    syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+
+                    isInjectionButtonClicked = false;
+                    injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+
+
+                } else {
+                    // If the button is not clicked, set the background color to the new color
+                    pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+                    isPillsButtonClicked = false;
+                }
+
+
+            }
+        });
+        syrup_ImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isSyrupButtonClicked) {
+
+                    isPillsButtonClicked = false;
+                    pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+
+
+                    isSyrupButtonClicked = true;
+                    syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+
+                    isInjectionButtonClicked = false;
+                    injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+
+                } else {
+                    // If the button is not clicked, set the background color to the new color
+                    syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+                    isSyrupButtonClicked = false;
+                }
+
+
+            }
+        });
+        injection_ImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isInjectionButtonClicked) {
+
+                    isPillsButtonClicked = false;
+                    pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+
+
+                    isSyrupButtonClicked = false;
+                    syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+
+                    isInjectionButtonClicked = true;
+                    injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+
+                } else {
+
+                    injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+                    isInjectionButtonClicked = false;
+                }
+
+
+            }
+        });
 
 
 
@@ -113,8 +206,13 @@ public class ReminderEditorActivity extends AppCompatActivity implements View.On
                 String medName = editMedNameEditText.getText().toString();
                 String medNotificationTime = medNotificationTimeButton.getText().toString().trim();
                 String medNotificationTime2 = medNotificationTimeButton2.getText().toString().trim();
-                String medType = ReminderEditorActivity.this.medType.toString();
+
+
+
                 String medDosage = editDosageEditText.getText().toString();
+
+
+
                 try {
                     setAlarm(medName, medNotificationTime);
                 } catch (ParseException e) {
@@ -143,8 +241,21 @@ public class ReminderEditorActivity extends AppCompatActivity implements View.On
                 intent.putExtra(POSITION_KEY,position);
                 intent.putExtra(MED_NAME_KEY, medName);
                 intent.putExtra(MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
-                intent.putExtra(MED_TYPE_KEY, medType);
+                Log.d("imageButton",String.valueOf(isPillsButtonClicked));
+                if (isPillsButtonClicked) {
+                    intent.putExtra(MED_TYPE_KEY,"pills");
+                    Log.d("imageButton","if statement is running");
+                }
+
+                if (isSyrupButtonClicked) {
+                    intent.putExtra(MED_TYPE_KEY,"syrup");
+                }
+                if (isInjectionButtonClicked) {
+                    intent.putExtra(MED_TYPE_KEY,"injection");
+                }
+
                 intent.putExtra(MED_DOSAGE_KEY, medDosage);
+
 
                 startActivity(intent);
             }});
@@ -174,23 +285,8 @@ public class ReminderEditorActivity extends AppCompatActivity implements View.On
 
     }// END of onCreate
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.pills_ImageButton:
-                Toast.makeText(this, "Medicine is a pill", Toast.LENGTH_SHORT).show();
-                medType = "Pills";
-                break;
-            case R.id.syrup_ImageButton:
-                Toast.makeText(this, "Medicine is syrup type", Toast.LENGTH_SHORT).show();
-                medType ="Syrup";
-                break;
-            case R.id.injection_ImageButton:
-                Toast.makeText(this, "Medicine is an injection", Toast.LENGTH_SHORT).show();
-                medType = "Injection";
-                break;
-        }
-    }
+
+
 
     /* Select Time Section */
     private void selectTime(Button button) {
@@ -235,31 +331,46 @@ public class ReminderEditorActivity extends AppCompatActivity implements View.On
     /* End Select Time Section */
 
     private void setAlarm(String medName, String time) throws ParseException {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);   //assigining alaram manager object to set alaram
+        //assigning alarm manager object to set alarm
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         //sending data to alarm class to create channel and notification
         Intent intent = new Intent(getApplicationContext(), AlarmBroadcast.class);
         intent.putExtra(AlarmBroadcast.Event_KEY, medName);
-        Log.d("testing","setAlarm can accesss medName:"+medName);
 
 
-        intent.putExtra("time", time);
+
+        intent.putExtra(AlarmBroadcast.TIME_KEY, time);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-        // TODO notifications are instant pop off
 
+
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
+        Date date = sdf.parse(time);
+        Calendar calendar1 = Calendar.getInstance();
+        assert date != null;
+        calendar1.setTime(date);
+        int hour = calendar1.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar1.get(Calendar.MINUTE);
+
+        // get current date and time
         Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+//        calendar.set(Calendar.SECOND, 0);
 
 
-//        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-//        int minute = calendar.get(Calendar.MINUTE);
-//        calendar.set(Calendar.HOUR_OF_DAY, hour);
-//        calendar.set(Calendar.MINUTE, minute);
-        Date date1 = calendar.getTime();
 
+        long alarmTime = calendar.getTimeInMillis();
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, date1.getTime(), pendingIntent);
+        Log.d("testing","setAlarm can access date:"+ calendar.getTime());
+        Log.d("testing","setAlarm can access date:"+ alarmTime);
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+
 
 
 
