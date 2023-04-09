@@ -55,10 +55,11 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
                 public void onClick(View view) {
                     Intent intent = new Intent(context, DrugView.class);
                     intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminder.getMedName());
+                    intent.putExtra(ReminderEditorActivity.MED_ID_KEY, reminder.getId());
                     context.startActivity(intent);
                 }
             }
-        
+
 
         );
 
@@ -88,6 +89,8 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
             med_dosage_value_text_view = itemView.findViewById(R.id.med_dosage_value_text_view);
             med_info_button = itemView.findViewById(R.id.med_info_button);
 
+
+            // TODO onClick reminder
            itemView.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View view) {
@@ -120,6 +123,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
 
                }
            });
+           // TODO onLongClick Reminder
            itemView.setOnLongClickListener(new View.OnLongClickListener() {
                @Override
                public boolean onLongClick(View view) {

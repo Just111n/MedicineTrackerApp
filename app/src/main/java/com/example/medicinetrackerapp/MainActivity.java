@@ -18,7 +18,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -28,9 +34,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> remindersAdapter;
     FloatingActionButton addReminderFab;
 
-    RemindersDataSource remindersDataSource = LocalRemindersData.getInstance();
-//    RemindersDataSource remindersDataSource = FirebaseRemindersData.getInstance();
-
+    DatabaseReference  mbase = FirebaseDatabase.getInstance().getReference("reminders");
+    FirebaseRemindersAdapter adapter;
 
 
     // Creating options Menu
@@ -41,33 +46,53 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    // Selecting options on menu
+//     Selecting options on menu
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
 
+
+        mbase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long  count = snapshot.getChildrenCount();
+                Log.d(FirebaseRemindersData.FIREBASE_TESTING,String.valueOf(count));
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+
+        });
+
+
         if (item.getItemId() == R.id.profile_menu_item) {
 
-            String message = String.valueOf(remindersDataSource.getSize());
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "count is clicked!", Toast.LENGTH_SHORT).show();
 
             return true;
         }
         if (item.getItemId() == R.id.copy_menu_item) {
-            String clipBoardData = remindersDataSource.toString();
-            // Gets a handle to the clipboard service.
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//            String clipBoardData = remindersDataSource.toString();
+//            // Gets a handle to the clipboard service.
+//            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+//
+//            // Creates a new text clip to put on the clipboard.
+//            ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, clipBoardData);
+//
+//            // Set the clipboard's primary clip.
+//            clipboard.setPrimaryClip(clip);
+//
+//            // Only show a toast for Android 12 and lower.
+//            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+//                Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
 
-            // Creates a new text clip to put on the clipboard.
-            ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, clipBoardData);
 
-            // Set the clipboard's primary clip.
-            clipboard.setPrimaryClip(clip);
-
-            // Only show a toast for Android 12 and lower.
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-                Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(getApplicationContext(), "copy  is clicked!", Toast.LENGTH_SHORT).show();
             return true;
         }
 
@@ -88,23 +113,18 @@ public class MainActivity extends AppCompatActivity {
         /* End Find Views Section */
 
 
-        remindersAdapter = new RemindersAdapter(this, remindersDataSource);
+        remindersRecyclerView.setLayoutManager(
+                new LinearLayoutManager(this));
 
-        remindersRecyclerView.setAdapter(remindersAdapter);
+        FirebaseRecyclerOptions<Reminder> options
+                = new FirebaseRecyclerOptions.Builder<Reminder>()
+                .setQuery(mbase, Reminder.class)
+                .build();
 
-        remindersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new FirebaseRemindersAdapter(options,this);
+        remindersRecyclerView.setAdapter(adapter);
+        Log.d(FirebaseRemindersData.FIREBASE_TESTING,"MainActivity onCreate Method is called");
 
-        // TODO (DEL later), in onCreate, remindersDateSource is all empty => remindersList is empty
-        String testName = "NIL";
-        int size = -1;
-        if (remindersDataSource.getSize()>=1) {
-            Reminder testRem = remindersDataSource.getReminder(0);
-             testName= testRem.getMedName();
-        }
-        size = remindersDataSource.getSize();
-        Log.d(FirebaseRemindersData.FIREBASE_TESTING, "onCreate: "+size);
-        Log.d(FirebaseRemindersData.FIREBASE_TESTING, "onCreate: "+testName);
-        // END //
 
         // TODO 1.1 Receive data from ReminderEditorActivity to MainActivity
         Intent intent = getIntent();
@@ -114,45 +134,46 @@ public class MainActivity extends AppCompatActivity {
         // Update/Delete reminder  =>  position >= 0
         //  Create reminder =>  position == -1
         //  open app => position == -2
-        int position = intent.getIntExtra(ReminderEditorActivity.POSITION_KEY, -2);
-        String newMedName = intent.getStringExtra(ReminderEditorActivity.MED_NAME_KEY);
-        ArrayList<String> medNotificationTimes = intent.getStringArrayListExtra(ReminderEditorActivity.MED_NOTIFICATION_TIMES_KEY);
-        String medType = intent.getStringExtra(ReminderEditorActivity.MED_TYPE_KEY);
-        String medDosage = intent.getStringExtra(ReminderEditorActivity.MED_DOSAGE_KEY);
+//        int position = intent.getIntExtra(ReminderEditorActivity.POSITION_KEY, -2);
+        String medId = intent.getStringExtra(ReminderEditorActivity.MED_ID_KEY);
 
         if (action == null) {
             action = "OPEN_APP";
         }
         /* Check action Section */
-        switch (action) {
-            case ReminderEditorActivity.CREATE:
-                Reminder newReminder = new Reminder();
-                newReminder.setMedName(newMedName);
-                newReminder.setMedNotificationTimes(medNotificationTimes);
-                newReminder.setMedDosage(medDosage);
-                newReminder.setMedType(medType);
-                remindersDataSource.addReminder(newReminder);
-                remindersAdapter.notifyDataSetChanged();
-                break;
+//        switch (action) {
+//            case ReminderEditorActivity.CREATE:
+//                Reminder newReminder = new Reminder();
+//                newReminder.setMedName(newMedName);
+//                newReminder.setMedNotificationTimes(medNotificationTimes);
+//                newReminder.setMedDosage(medDosage);
+//                newReminder.setMedType(medType);
+////                remindersDataSource.addReminder(newReminder);
+//                String keyToAdd = mbase.push().getKey();
+//                newReminder.setId(keyToAdd);
+//                mbase.child(keyToAdd).setValue(newReminder);
+//
+////                remindersAdapter.notifyDataSetChanged();
+//                break;
 
-            case ReminderEditorActivity.UPDATE:
-                Reminder reminder = remindersDataSource.getReminder(position);
-                reminder.setMedName(newMedName);
-                reminder.setMedNotificationTimes(medNotificationTimes);
-                reminder.setMedType(medType);
-                reminder.setMedDosage(medDosage);
-                remindersDataSource.updateReminder(position, reminder);
-                remindersAdapter.notifyItemChanged(position);
-                break;
+//            case ReminderEditorActivity.UPDATE:
+//                Reminder reminder = mbase.child("reminders")..getReminder(position);
+//                reminder.setMedName(newMedName);
+//                reminder.setMedNotificationTimes(medNotificationTimes);
+//                reminder.setMedType(medType);
+//                reminder.setMedDosage(medDosage);
+//                remindersDataSource.updateReminder(position, reminder);
+//                remindersAdapter.notifyItemChanged(position);
+//                break;
+//
+//            case ReminderEditorActivity.DELETE:
+//                if (position >= 0) {
+//                    //                    remindersAdapter.notifyItemRemoved(position);
+//                    mbase.child(medId).removeValue();
+//                }
+//                break;
 
-            case ReminderEditorActivity.DELETE:
-                if (position >= 0) {
-                    remindersDataSource.removeReminder(position);
-                    remindersAdapter.notifyItemRemoved(position);
-                }
-                break;
-
-        }
+//        }
         /* End Check action Section */
 
         addReminderFab.setOnClickListener(new View.OnClickListener() {
@@ -170,10 +191,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+    }
 
-
-
-
-
-
+    @Override protected void onStop()
+    {
+        super.onStop();
+        adapter.stopListening();
+    }
 }

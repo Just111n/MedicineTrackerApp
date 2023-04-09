@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import java.util.Date;
 
 public class ReminderEditorActivity extends AppCompatActivity {
 
+    public static final String MED_ID_KEY = "MED_ID_KEY";
     /* Views Section */
     Button medNotificationTimeButton, medNotificationTimeButton2, addReminderButton, deleteReminderButton;
     EditText editMedNameEditText;
@@ -38,6 +42,8 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
     EditText editDosageEditText;
+
+    DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
 
 
 
@@ -72,12 +78,16 @@ public class ReminderEditorActivity extends AppCompatActivity {
         deleteReminderButton = findViewById(R.id.delete_reminder_button);
 
 
+
+
         Intent intent = getIntent();
         String action = intent.getStringExtra(ACTION_KEY);
-        int position = intent.getIntExtra(POSITION_KEY,-1);
+        String medId = intent.getStringExtra(MED_ID_KEY);
         ArrayList<String> medNotificationTimes = intent.getStringArrayListExtra(MED_NOTIFICATION_TIMES_KEY);
-        String medName = intent.getStringExtra(MED_NAME_KEY);//ASK what does this do
+        String medName = intent.getStringExtra(MED_NAME_KEY);
+
         String medType = intent.getStringExtra(MED_TYPE_KEY);
+
         String medDosage = intent.getStringExtra(MED_DOSAGE_KEY);
 
 
@@ -206,7 +216,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 String medName = editMedNameEditText.getText().toString();
                 String medNotificationTime = medNotificationTimeButton.getText().toString().trim();
                 String medNotificationTime2 = medNotificationTimeButton2.getText().toString().trim();
-
+                String medType = "";
 
 
                 String medDosage = editDosageEditText.getText().toString();
@@ -214,7 +224,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
                 try {
-                    setAlarm(medName, medNotificationTime);
+                    setAlarm(medName, medNotificationTime,medDosage);
                 } catch (ParseException e) {
                     Log.d("testing","error");
                 }
@@ -224,37 +234,64 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 medNotificationTimes.add(medNotificationTime);
                 medNotificationTimes.add(medNotificationTime2);
 
-
-
-
-                if (action.equals(CREATE)) {
-                    Toast.makeText(getApplicationContext(), medName  +" added successfully", Toast.LENGTH_LONG).show();
-                }
-                if (action.equals(UPDATE)) {
-                    Toast.makeText(getApplicationContext(), medName  +" updated successfully", Toast.LENGTH_LONG).show();
-                }
-
-
                 // TODO 1.0 submit data from ReminderEditorActivity to MainActivity
                 Intent intent = new Intent(ReminderEditorActivity.this, MainActivity.class);
                 intent.putExtra(ACTION_KEY, action);
-                intent.putExtra(POSITION_KEY,position);
+//                intent.putExtra(POSITION_KEY,position);
                 intent.putExtra(MED_NAME_KEY, medName);
                 intent.putExtra(MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
                 Log.d("imageButton",String.valueOf(isPillsButtonClicked));
                 if (isPillsButtonClicked) {
                     intent.putExtra(MED_TYPE_KEY,"pills");
                     Log.d("imageButton","if statement is running");
+                    medType="pills";
                 }
 
                 if (isSyrupButtonClicked) {
                     intent.putExtra(MED_TYPE_KEY,"syrup");
+                    medType= "syrup";
                 }
                 if (isInjectionButtonClicked) {
                     intent.putExtra(MED_TYPE_KEY,"injection");
+                    medType="injection";
                 }
 
                 intent.putExtra(MED_DOSAGE_KEY, medDosage);
+
+                /* Check action Section */
+                switch (action) {
+                    case CREATE:
+                        Reminder newReminder = new Reminder();
+                        newReminder.setMedName(medName);
+                        newReminder.setMedNotificationTimes(medNotificationTimes);
+                        newReminder.setMedDosage(medDosage);
+                        newReminder.setMedType(medType);
+                        String keyToAdd = mbase.push().getKey();
+                        newReminder.setId(keyToAdd);
+                        mbase.child(keyToAdd).setValue(newReminder);
+                        Toast.makeText(getApplicationContext(), medName  +" added successfully", Toast.LENGTH_LONG).show();
+                        break;
+
+                    case ReminderEditorActivity.UPDATE:
+                        Reminder reminder = new Reminder();
+                        reminder.setMedName(medName);
+                        reminder.setId(medId);
+                        reminder.setMedNotificationTimes(medNotificationTimes);
+                        reminder.setMedType(medType);
+                        reminder.setMedDosage(medDosage);
+                        String keyToChange = medId;
+                        mbase.child(keyToChange).setValue(reminder);
+                        Toast.makeText(getApplicationContext(), medName  +" updated successfully", Toast.LENGTH_LONG).show();
+                        break;
+
+                    case ReminderEditorActivity.DELETE:
+                    {
+                        mbase.child(medId).removeValue();
+                    }
+                        break;
+
+                }
+                /* End Check action Section */
 
 
                 startActivity(intent);
@@ -272,8 +309,15 @@ public class ReminderEditorActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intent = new Intent(ReminderEditorActivity.this,MainActivity.class);
-                                intent.putExtra(ACTION_KEY,DELETE);
-                                intent.putExtra(POSITION_KEY,position);
+                                if (action.equals(DELETE)) {
+
+                                    intent.putExtra(ACTION_KEY,DELETE);
+                                    intent.putExtra(MED_ID_KEY,medId);
+                                    Log.d(FirebaseRemindersData.FIREBASE_TESTING,"key to delete"+medId);
+                                    mbase.child(medId).removeValue();
+
+                                }
+
                                 startActivity(intent);
 
                             }
@@ -330,7 +374,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
     }
     /* End Select Time Section */
 
-    private void setAlarm(String medName, String time) throws ParseException {
+    private void setAlarm(String medName, String time, String medDosage) throws ParseException {
         //assigning alarm manager object to set alarm
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
@@ -338,14 +382,10 @@ public class ReminderEditorActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), AlarmBroadcast.class);
         intent.putExtra(AlarmBroadcast.Event_KEY, medName);
 
-
-
         intent.putExtra(AlarmBroadcast.TIME_KEY, time);
+        intent.putExtra(AlarmBroadcast.DOSAGE_KEY,medDosage);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
-
-
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");

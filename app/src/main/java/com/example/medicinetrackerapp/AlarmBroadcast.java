@@ -19,6 +19,8 @@ public class AlarmBroadcast extends BroadcastReceiver {
     public final static String Event_KEY = "EVENT_KEY";
     public final static String TIME_KEY = "TIME_KEY";
 
+    public final static String DOSAGE_KEY = "DOSAGE_KEY";
+
 
 
 
@@ -27,6 +29,7 @@ public class AlarmBroadcast extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();
         String text = bundle.getString(Event_KEY);
         String date = bundle.getString(TIME_KEY);
+        String medDosage = bundle.getString(DOSAGE_KEY);
         Log.d("testing","AlarmBroadcast received time:"+date);
 
 
@@ -49,6 +52,7 @@ public class AlarmBroadcast extends BroadcastReceiver {
 //        contentView.setOnClickPendingIntent(R.id.flashButton, pendingSwitchIntent);
         contentView.setTextViewText(R.id.message, text);
         contentView.setTextViewText(R.id.date, date);
+        contentView.setTextViewText(R.id.dosage_textView,medDosage);
         mBuilder.setSmallIcon(R.drawable.alarm);
         mBuilder.setAutoCancel(true);
         mBuilder.setOngoing(true);
