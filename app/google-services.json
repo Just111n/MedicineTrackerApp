@@ -15,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+          "client_id": "159207044284-1stslbbbni0kkspm0lai2kdjaqahnif8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.firebasecalendarapp",
+            "certificate_hash": "9c4acd6cd7789a64825018b8f452f0e4e0f7bcd9"
+          }
+        },
+        {
+          "client_id": "159207044284-s8jt1r49n5ctub6o5jvslk4i702e9tn3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -52,7 +60,7 @@
           }
         },
         {
-          "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+          "client_id": "159207044284-s8jt1r49n5ctub6o5jvslk4i702e9tn3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -89,7 +97,7 @@
           }
         },
         {
-          "client_id": "159207044284-ocukrkmr61cesb8rcvshad2sb783vpa1.apps.googleusercontent.com",
+          "client_id": "159207044284-s8jt1r49n5ctub6o5jvslk4i702e9tn3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

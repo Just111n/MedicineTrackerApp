@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     final static String CLIPBOARD_LABEL = "CLIPBOARD_LABEL";
+    private FirebaseAuth mAuth;
     RecyclerView remindersRecyclerView;
     RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> remindersAdapter;
     FloatingActionButton addReminderFab;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
+        mAuth = FirebaseAuth.getInstance();
 
 
         mbase.addValueEventListener(new ValueEventListener() {
@@ -95,6 +99,14 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "copy  is clicked!", Toast.LENGTH_SHORT).show();
             return true;
         }
+        if (item.getItemId() == R.id.log_out_menu_item) {
+           mAuth.signOut();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+
+
+
+            return true;
+        }
 
         return false;
     }
@@ -105,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
 
 
         /* Find Views Section */
@@ -194,7 +207,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        adapter.startListening();
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null){
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        } else {
+            adapter.startListening();
+
+        }
     }
 
     @Override protected void onStop()

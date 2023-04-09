@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -59,12 +61,15 @@ public class ReminderEditorActivity extends AppCompatActivity {
     boolean isPillsButtonClicked = false;
     boolean isSyrupButtonClicked = false;
     boolean isInjectionButtonClicked = false;
+    FirebaseAuth mAuth;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder_editor);
+
+        mAuth = FirebaseAuth.getInstance();
 
 
         editMedNameEditText = findViewById(R.id.edit_medName_editText);
@@ -309,7 +314,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intent = new Intent(ReminderEditorActivity.this,MainActivity.class);
-                                if (action.equals(DELETE)) {
+                                if (action.equals(UPDATE)) {
 
                                     intent.putExtra(ACTION_KEY,DELETE);
                                     intent.putExtra(MED_ID_KEY,medId);
@@ -416,7 +421,14 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null){
+            startActivity(new Intent(ReminderEditorActivity.this, LoginActivity.class));
+        }
+    }
 }
 
 
