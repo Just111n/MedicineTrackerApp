@@ -43,7 +43,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
     EditText editDosageEditText;
 
-    DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
+//    DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
 
 
 
@@ -266,9 +266,9 @@ public class ReminderEditorActivity extends AppCompatActivity {
                         newReminder.setMedNotificationTimes(medNotificationTimes);
                         newReminder.setMedDosage(medDosage);
                         newReminder.setMedType(medType);
-                        String keyToAdd = mbase.push().getKey();
+                        String keyToAdd = MainActivity.mbase.push().getKey();
                         newReminder.setId(keyToAdd);
-                        mbase.child(keyToAdd).setValue(newReminder);
+                        MainActivity.mbase.child(keyToAdd).setValue(newReminder);
                         Toast.makeText(getApplicationContext(), medName  +" added successfully", Toast.LENGTH_LONG).show();
                         break;
 
@@ -280,13 +280,13 @@ public class ReminderEditorActivity extends AppCompatActivity {
                         reminder.setMedType(medType);
                         reminder.setMedDosage(medDosage);
                         String keyToChange = medId;
-                        mbase.child(keyToChange).setValue(reminder);
+                        MainActivity.mbase.child(keyToChange).setValue(reminder);
                         Toast.makeText(getApplicationContext(), medName  +" updated successfully", Toast.LENGTH_LONG).show();
                         break;
 
                     case ReminderEditorActivity.DELETE:
                     {
-                        mbase.child(medId).removeValue();
+                        MainActivity.mbase.child(medId).removeValue();
                     }
                         break;
 
@@ -314,7 +314,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
                                     intent.putExtra(ACTION_KEY,DELETE);
                                     intent.putExtra(MED_ID_KEY,medId);
                                     Log.d(FirebaseRemindersData.FIREBASE_TESTING,"key to delete"+medId);
-                                    mbase.child(medId).removeValue();
+                                    MainActivity.mbase.child(medId).removeValue();
 
                                 }
 

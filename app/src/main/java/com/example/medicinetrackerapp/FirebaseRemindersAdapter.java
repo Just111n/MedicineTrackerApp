@@ -26,7 +26,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, 
 
     Context context;
 
-    DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
+//    DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
 
     public FirebaseRemindersAdapter(@NonNull FirebaseRecyclerOptions options, Context context) {
         super(options);
@@ -83,7 +83,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, 
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                mbase.child(medId).removeValue();
+                                MainActivity.mbase.child(medId).removeValue();
                             }
                         }).setNegativeButton("No",null).show();
 

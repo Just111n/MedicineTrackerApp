@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> remindersAdapter;
     FloatingActionButton addReminderFab;
 
-    DatabaseReference  mbase = FirebaseDatabase.getInstance().getReference("reminders");
+    final static DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
     FirebaseRemindersAdapter adapter;
 
 
