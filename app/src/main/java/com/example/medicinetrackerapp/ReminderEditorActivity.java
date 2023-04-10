@@ -317,7 +317,6 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
                                     intent.putExtra(ACTION_KEY,DELETE);
                                     intent.putExtra(MED_ID_KEY,medId);
-                                    Log.d(FirebaseRemindersData.FIREBASE_TESTING,"key to delete"+medId);
                                     MainActivity.mbase.child(medId).removeValue();
 
                                 }

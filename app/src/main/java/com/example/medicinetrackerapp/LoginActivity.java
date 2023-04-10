@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     TextInputEditText etLoginEmail, etLoginPassword;
-    TextView tvRegisterHere;
+    TextView tvRegisterHere, forgetPasswordTextView;
     Button btnLogin;
     SignInButton googleSignInButton;
 
@@ -61,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         etLoginPassword = findViewById(R.id.etLoginPass);
         tvRegisterHere = findViewById(R.id.tvRegisterHere);
         btnLogin = findViewById(R.id.btnLogin);
+        forgetPasswordTextView = findViewById(R.id.forgot_password_textView);
         googleSignInButton = findViewById(R.id.google_sign_in_button);
 
 
@@ -77,7 +78,15 @@ public class LoginActivity extends AppCompatActivity {
         tvRegisterHere.setOnClickListener(view ->{
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
+        forgetPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               startActivity(new Intent(LoginActivity.this,ForgetPasswordActivity.class));
+            }
+        });
     }
+
+
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
@@ -142,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = etLoginPassword.getText().toString();
 
         if (TextUtils.isEmpty(email)){
-            etLoginEmail.setError("Email cannot be empty");
+            etLoginEmail.setError(getString(R.string.empty_email));
             etLoginEmail.requestFocus();
         }else if (TextUtils.isEmpty(password)){
             etLoginPassword.setError("Password cannot be empty");

@@ -95,6 +95,17 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/forgot_password_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Forget Password?"
+            android:textColor="@color/teal_700"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_gravity="center"/>
+
         <com.google.android.gms.common.SignInButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

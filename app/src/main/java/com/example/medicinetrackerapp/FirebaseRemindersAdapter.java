@@ -61,7 +61,6 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, 
                 intent.putExtra(ReminderEditorActivity.MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
                 intent.putExtra(ReminderEditorActivity.MED_TYPE_KEY, medType);
                 intent.putExtra(ReminderEditorActivity.MED_DOSAGE_KEY, medDosage);
-                Log.d(FirebaseRemindersData.FIREBASE_TESTING,medType);
                 context.startActivity(intent);
 
 
