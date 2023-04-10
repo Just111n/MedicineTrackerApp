@@ -9,21 +9,22 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class DrugViewActivity extends AppCompatActivity {
+public class MedicineInfoActivity extends AppCompatActivity {
 
-    private TextView drugName;
-    FirebaseAuth mAuth;
+    private TextView tvDrugName;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_medicine_info);
 
         mAuth = FirebaseAuth.getInstance();
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drug_view);
 
-        drugName = findViewById(R.id.drug_name);
+
+        tvDrugName = findViewById(R.id.tv_drug_name);
         String name = getIntent().getStringExtra(ReminderEditorActivity.MED_NAME_KEY);  // getting med name
-        drugName.setText(name);
+        tvDrugName.setText(name);
     }
 
     @Override
@@ -31,7 +32,7 @@ public class DrugViewActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null){
-            startActivity(new Intent(DrugViewActivity.this, LoginActivity.class));
+            startActivity(new Intent(MedicineInfoActivity.this, LoginActivity.class));
         }
     }
 }

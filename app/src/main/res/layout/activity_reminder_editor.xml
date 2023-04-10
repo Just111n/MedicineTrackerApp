@@ -78,7 +78,7 @@
             android:background="@drawable/roundcorners1"
             android:backgroundTint="@color/button_background_colour"
             android:src="@drawable/pill_image"
-            android:contentDescription="Image of pills for medication reminder"
+            android:contentDescription="Image of pills for medication reminderModel"
             />
 
 
@@ -90,7 +90,7 @@
             android:background="@drawable/roundcorners1"
             android:backgroundTint="@color/button_background_colour"
             app:srcCompat="@drawable/syrup_image"
-            android:contentDescription="Image of syrup for medication reminder"
+            android:contentDescription="Image of syrup for medication reminderModel"
             />
 
         <ImageButton
@@ -101,7 +101,7 @@
             android:background="@drawable/roundcorners1"
             android:backgroundTint="@color/button_background_colour"
             app:srcCompat="@drawable/injection_image"
-            android:contentDescription="Image of injection for medication reminder"/>
+            android:contentDescription="Image of injection for medication reminderModel"/>
 
     </LinearLayout>
     <TextView

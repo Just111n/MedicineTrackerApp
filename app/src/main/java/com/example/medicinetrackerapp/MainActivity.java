@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,13 +31,12 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     final static String CLIPBOARD_LABEL = "CLIPBOARD_LABEL";
-    private FirebaseAuth mAuth;
-    RecyclerView remindersRecyclerView;
-    FloatingActionButton addReminderFab;
-
     final static DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
-    FirebaseRemindersAdapter adapter;
-    ArrayList<Reminder> remindersList;
+    private FirebaseAuth mAuth;
+    private RecyclerView remindersRecyclerView;
+    private FloatingActionButton addReminderFab;
+    private FirebaseRemindersAdapter adapter;
+    ArrayList<ReminderModel> remindersList;
 
 
     // Creating options Menu
@@ -58,38 +56,39 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         StringBuilder clipBoardData = new StringBuilder();
-        for (Reminder reminder: remindersList) {
-            clipBoardData.append(reminder.toString());
+        for (ReminderModel reminderModel : remindersList) {
+            clipBoardData.append(reminderModel.toString());
             clipBoardData.append("\n");
         }
 
-        switch (selectedMenuItemId) {
-            case R.id.copy_menu_item:
-                // Gets a handle to the clipboard service.
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        if (selectedMenuItemId == R.id.copy_menu_item) {
+            // Gets a handle to the clipboard service.
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
-                // Creates a new text clip to put on the clipboard.
-                ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, clipBoardData.toString());
+            // Creates a new text clip to put on the clipboard.
+            ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, clipBoardData.toString());
 
-                // Set the clipboard's primary clip.
-                clipboard.setPrimaryClip(clip);
+            // Set the clipboard's primary clip.
+            clipboard.setPrimaryClip(clip);
 
-                // Only show a toast for Android 12 and lower.
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-                    Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
-
-                Log.d("copy", clipBoardData.toString());
+            // Only show a toast for Android 12 and lower.
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
                 Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
-                return true;
 
-            case R.id.log_out_menu_item:
-                mAuth.signOut();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                return true;
-
-            default:
-                return false;
+            Log.d("copy", clipBoardData.toString());
+            Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
+            return true;
         }
+
+        if (selectedMenuItemId == R.id.log_out_menu_item) {
+            mAuth.signOut();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            return true;
+        }
+
+        return false;
+
+
 
     }
 
@@ -109,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
         remindersRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this));
 
-        FirebaseRecyclerOptions<Reminder> options
-                = new FirebaseRecyclerOptions.Builder<Reminder>()
-                .setQuery(mbase, Reminder.class)
+        FirebaseRecyclerOptions<ReminderModel> options
+                = new FirebaseRecyclerOptions.Builder<ReminderModel>()
+                .setQuery(mbase, ReminderModel.class)
                 .build();
 
         adapter = new FirebaseRemindersAdapter(options,this);
@@ -124,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 remindersList.clear();
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    Reminder reminder = dataSnapshot.getValue(Reminder.class);
-                    remindersList.add(reminder);
+                    ReminderModel reminderModel = dataSnapshot.getValue(ReminderModel.class);
+                    remindersList.add(reminderModel);
                 }
             }
 
@@ -136,13 +135,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         });
-        addReminderFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,ReminderEditorActivity.class);
-                intent.putExtra(ReminderEditorActivity.ACTION_KEY,ReminderEditorActivity.CREATE);
-                startActivity(intent);
-            }
+        addReminderFab.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this,ReminderEditorActivity.class);
+            intent.putExtra(ReminderEditorActivity.ACTION_KEY,ReminderEditorActivity.CREATE);
+            startActivity(intent);
         });
 
     }

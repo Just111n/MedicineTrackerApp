@@ -1,21 +1,21 @@
 package com.example.medicinetrackerapp;
 
-import java.time.LocalDateTime;
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
-public class Reminder {
+public class ReminderModel {
 
     private String id;
-
     private String medName;
     private String medType;
     private ArrayList<String> medNotificationTimes;
     private String medDosage;
 
-    Reminder() {
-
+    ReminderModel() {
     }
 
+    @NonNull
     @Override
     public String toString() {
         String output = "";

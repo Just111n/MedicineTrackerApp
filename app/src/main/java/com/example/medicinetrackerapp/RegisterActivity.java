@@ -1,8 +1,5 @@
 package com.example.medicinetrackerapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,20 +7,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    TextInputEditText etRegEmail;
-    TextInputEditText etRegPassword;
-    TextView tvLoginHere;
-    Button btnRegister;
+    private TextInputEditText etRegEmail, etRegPassword;
 
-    FirebaseAuth mAuth;
+    private TextView tvLoginHere;
+    private Button btnRegister;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +35,14 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        btnRegister.setOnClickListener(view ->{
-            createUser();
-        });
+        btnRegister.setOnClickListener(view -> createUser());
 
-        tvLoginHere.setOnClickListener(view ->{
-            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-        });
+        tvLoginHere.setOnClickListener(view -> startActivity(new Intent(RegisterActivity.this, LoginActivity.class)));
     }
 
     private void createUser(){
-        String email = etRegEmail.getText().toString();
-        String password = etRegPassword.getText().toString();
+        String email = Objects.requireNonNull(etRegEmail.getText()).toString();
+        String password = Objects.requireNonNull(etRegPassword.getText()).toString();
 
         if (TextUtils.isEmpty(email)){
             etRegEmail.setError(getString(R.string.empty_email));
@@ -57,15 +51,12 @@ public class RegisterActivity extends AppCompatActivity {
             etRegPassword.setError("Password cannot be empty");
             etRegPassword.requestFocus();
         }else{
-            mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()){
-                        Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                    }else{
-                        Toast.makeText(RegisterActivity.this, "Registration Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+            mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+                if (task.isSuccessful()){
+                    Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                }else{
+                    Toast.makeText(RegisterActivity.this, "Registration Error: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }

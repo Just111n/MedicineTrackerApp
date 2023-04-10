@@ -2,9 +2,7 @@ package com.example.medicinetrackerapp;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +17,11 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 import java.util.ArrayList;
 
-public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, FirebaseRemindersAdapter.ReminderViewHolder> {
+public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderModel, FirebaseRemindersAdapter.ReminderViewHolder> {
 
 
-    Context context;
+     Context context;
 
-//    DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
 
     public FirebaseRemindersAdapter(@NonNull FirebaseRecyclerOptions options, Context context) {
         super(options);
@@ -42,69 +39,55 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, 
 
 
     @Override
-    protected void onBindViewHolder(@NonNull ReminderViewHolder holder, int position, @NonNull Reminder reminder) {
-        String medId = reminder.getId();
+    protected void onBindViewHolder(@NonNull ReminderViewHolder holder, int position, @NonNull ReminderModel reminderModel) {
+        String medId = reminderModel.getId();
 
-        holder.getItemView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String medName = reminder.getMedName();
-                ArrayList<String> medNotificationTimes = reminder.getMedNotificationTimes();
-                String medType = reminder.getMedType();
-                String medDosage = reminder.getMedDosage();
+        holder.getItemView().setOnClickListener(view -> {
+            String medName = reminderModel.getMedName();
+            ArrayList<String> medNotificationTimes = reminderModel.getMedNotificationTimes();
+            String medType = reminderModel.getMedType();
+            String medDosage = reminderModel.getMedDosage();
 
-                // Click on reminder to Update and Send data to ReminderEditorActivity for data to be shown in data fields in ReminderEditorActivity
-                Intent intent = new Intent(context,ReminderEditorActivity.class);
-                intent.putExtra(ReminderEditorActivity.ACTION_KEY,ReminderEditorActivity.UPDATE);
-                intent.putExtra(ReminderEditorActivity.MED_ID_KEY,medId);
-                intent.putExtra(ReminderEditorActivity.MED_NAME_KEY,medName);
-                intent.putExtra(ReminderEditorActivity.MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
-                intent.putExtra(ReminderEditorActivity.MED_TYPE_KEY, medType);
-                intent.putExtra(ReminderEditorActivity.MED_DOSAGE_KEY, medDosage);
-                context.startActivity(intent);
+            // Click on reminder to Update and Send data to ReminderEditorActivity for data to be shown in data fields in ReminderEditorActivity
+            Intent intent = new Intent(context,ReminderEditorActivity.class);
+            intent.putExtra(ReminderEditorActivity.ACTION_KEY,ReminderEditorActivity.UPDATE);
+            intent.putExtra(ReminderEditorActivity.MED_ID_KEY,medId);
+            intent.putExtra(ReminderEditorActivity.MED_NAME_KEY,medName);
+            intent.putExtra(ReminderEditorActivity.MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
+            intent.putExtra(ReminderEditorActivity.MED_TYPE_KEY, medType);
+            intent.putExtra(ReminderEditorActivity.MED_DOSAGE_KEY, medDosage);
+            context.startActivity(intent);
 
 
-            }
-        });;
-        holder.getItemView().setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
+        });
+        holder.getItemView().setOnLongClickListener(view -> {
 
 //                    Reminder reminder = data.getReminder(position);
-                new AlertDialog.Builder(context)
-                        .setTitle("Are you sure?")
-                        .setMessage("Do you want to delete this reminder?")
-                        .setIcon(R.drawable.ic_app)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                MainActivity.mbase.child(medId).removeValue();
-                            }
-                        }).setNegativeButton("No",null).show();
+            new AlertDialog.Builder(context)
+                    .setTitle("Are you sure?")
+                    .setMessage("Do you want to delete this reminder?")
+                    .setIcon(R.drawable.ic_app)
+                    .setPositiveButton("Yes", (dialogInterface, i) -> MainActivity.mbase.child(medId).removeValue()).setNegativeButton("No",null).show();
 
 
 
-                return true;
-            }
+            return true;
         });
 
-        holder.getMed_name_value_text_view().setText(reminder.getMedName());
-        holder.getMed_type_value_text_view().setText(reminder.getMedType());
+        holder.getMed_name_value_text_view().setText(reminderModel.getMedName());
+        holder.getMed_type_value_text_view().setText(reminderModel.getMedType());
 
-        String medNotificationTimesText = reminder.getMedNotificationTimes().toString();
+        String medNotificationTimesText = reminderModel.getMedNotificationTimes().toString();
         medNotificationTimesText = medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
 
         holder.getMed_notification_time_value_text_view().setText(medNotificationTimesText);
-        holder.getMed_dosage_value_text_view().setText(reminder.getMedDosage());
+        holder.getMed_dosage_value_text_view().setText(reminderModel.getMedDosage());
 
         // Click on med_info_button and send data to medInfoActivity
-        holder.getMed_info_button().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, DrugViewActivity.class);
-                intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminder.getMedName());
-                context.startActivity(intent);
-            }
+        holder.getMed_info_button().setOnClickListener(view -> {
+            Intent intent = new Intent(context, MedicineInfoActivity.class);
+            intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminderModel.getMedName());
+            context.startActivity(intent);
         });
 
 

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">MedMinder</string>
     <string name="empty_email">Email cannot be empty</string>
+    <string name="check_email">Check email for link to reset the password</string>
+    <string name="empty_password">Password cannot be empty</string>
+    <string name="user_log_in_success">User logged in successfully</string>
+    <string name="user_log_in_fail">Log in Error: User not found</string>
+    <string name="auth_fail">Sorry auth failed.</string>
+    <string name="update_reminder">Update Reminder</string>
 </resources>
