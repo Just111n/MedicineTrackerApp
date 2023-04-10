@@ -7,15 +7,24 @@
     android:orientation="vertical"
     android:padding="24dp"
     tools:context=".LoginActivity">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/app_name"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:layout_gravity="center"
         android:layout_marginTop="25dp"
-        android:src="@drawable/ic_app"
-        android:contentDescription="App icon"/>
+        android:contentDescription="App icon"
+        android:src="@drawable/ic_app" />
 
     <LinearLayout
         android:layout_width="match_parent"

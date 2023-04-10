@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
                 Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
 
-            Log.d("copy", clipBoardData.toString());
             Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
             return true;
         }

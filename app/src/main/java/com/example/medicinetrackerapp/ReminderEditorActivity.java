@@ -43,9 +43,9 @@ public class ReminderEditorActivity extends AppCompatActivity {
     public final static  String MED_DOSAGE_KEY = "MED_DOSAGE_KEY";
     public  final static String MED_TYPE_KEY = "MED_TYPE_KEY";
 
-    boolean isPillsButtonClicked;
-    boolean isSyrupButtonClicked;
-    boolean isInjectionButtonClicked;
+    boolean isPillsButtonSelected;
+    boolean isSyrupButtonSelected;
+    boolean isInjectionButtonSelected;
     FirebaseAuth mAuth;
 
 
@@ -55,9 +55,9 @@ public class ReminderEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reminder_editor);
 
         mAuth = FirebaseAuth.getInstance();
-         isPillsButtonClicked = false;
-         isSyrupButtonClicked = false;
-         isInjectionButtonClicked = false;
+         isPillsButtonSelected = false;
+         isSyrupButtonSelected = false;
+         isInjectionButtonSelected = false;
 
 
         editMedNameEditText = findViewById(R.id.edit_medName_editText);
@@ -72,7 +72,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
 
-
+        // From MainActivity
         Intent intent = getIntent();
         String action = intent.getStringExtra(ACTION_KEY);
         String medId = intent.getStringExtra(MED_ID_KEY);
@@ -92,15 +92,17 @@ public class ReminderEditorActivity extends AppCompatActivity {
             switch (medType) {
                 case "pills":
                     pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+                    isPillsButtonSelected = true;
 
                     break;
                 case "syrup":
                     syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+                    isSyrupButtonSelected = true;
 
                     break;
                 case "injection":
                     injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
-
+                    isInjectionButtonSelected = true;
                     break;
 
             }
@@ -117,65 +119,65 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
         pills_ImageButton.setOnClickListener(view -> {
-            if (!isPillsButtonClicked) {
+            if (!isPillsButtonSelected) {
                 // If the button is already clicked, set the background color to the original color
-                isPillsButtonClicked = true;
+                isPillsButtonSelected = true;
                 pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
 
 
-                isSyrupButtonClicked = false;
+                isSyrupButtonSelected = false;
                 syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
 
-                isInjectionButtonClicked = false;
+                isInjectionButtonSelected = false;
                 injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
 
 
             } else {
                 // If the button is not clicked, set the background color to the new color
                 pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
-                isPillsButtonClicked = false;
+                isPillsButtonSelected = false;
             }
 
 
         });
         syrup_ImageButton.setOnClickListener(view -> {
-            if (!isSyrupButtonClicked) {
+            if (!isSyrupButtonSelected) {
 
-                isPillsButtonClicked = false;
+                isPillsButtonSelected = false;
                 pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
 
 
-                isSyrupButtonClicked = true;
+                isSyrupButtonSelected = true;
                 syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
 
-                isInjectionButtonClicked = false;
+                isInjectionButtonSelected = false;
                 injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
 
             } else {
                 // If the button is not clicked, set the background color to the new color
                 syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
-                isSyrupButtonClicked = false;
+                isSyrupButtonSelected = false;
             }
 
 
         });
         injection_ImageButton.setOnClickListener(view -> {
-            if (!isInjectionButtonClicked) {
+            if (!isInjectionButtonSelected) {
 
-                isPillsButtonClicked = false;
+                isPillsButtonSelected = false;
                 pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
 
 
-                isSyrupButtonClicked = false;
+                isSyrupButtonSelected = false;
                 syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
 
-                isInjectionButtonClicked = true;
+                isInjectionButtonSelected = true;
                 injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
 
             } else {
 
                 injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
-                isInjectionButtonClicked = false;
+                isInjectionButtonSelected = false;
             }
 
 
@@ -188,18 +190,15 @@ public class ReminderEditorActivity extends AppCompatActivity {
             String medNotificationTime = medNotificationTimeButton.getText().toString().trim();
             String medNotificationTime2 = medNotificationTimeButton2.getText().toString().trim();
             String medType1 = "";
-            if (isPillsButtonClicked) {
-                intent.putExtra(MED_TYPE_KEY,"pills");
+            if (isPillsButtonSelected) {
                 medType1 = "pills";
 
             }
 
-            if (isSyrupButtonClicked) {
-                intent.putExtra(MED_TYPE_KEY,"syrup");
+            if (isSyrupButtonSelected) {
                 medType1 = "syrup";
             }
-            if (isInjectionButtonClicked) {
-                intent.putExtra(MED_TYPE_KEY,"injection");
+            if (isInjectionButtonSelected) {
                 medType1 ="injection";
             }
 
@@ -220,13 +219,8 @@ public class ReminderEditorActivity extends AppCompatActivity {
             medNotificationTimes1.add(medNotificationTime2);
 
             // TODO 1.0 submit data from ReminderEditorActivity to MainActivity
-            Intent intent1 = new Intent(ReminderEditorActivity.this, MainActivity.class);
-            intent1.putExtra(ACTION_KEY, action);
-            intent1.putExtra(MED_NAME_KEY, medName1);
-            intent1.putExtra(MED_NOTIFICATION_TIMES_KEY, medNotificationTimes1);
 
 
-            intent1.putExtra(MED_DOSAGE_KEY, medDosage1);
 
             /* Check action Section */
             switch (action) {
@@ -264,7 +258,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
             /* End Check action Section */
 
 
-            startActivity(intent1);
+            startActivity(new Intent(ReminderEditorActivity.this,MainActivity.class));
         });
 
         deleteReminderButton.setOnClickListener(view -> new AlertDialog.Builder(ReminderEditorActivity.this)
@@ -272,16 +266,15 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 .setMessage("Do you want to delete this reminder?")
                 .setIcon(R.drawable.ic_app)
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
-                    Intent intent12 = new Intent(ReminderEditorActivity.this,MainActivity.class);
+
                     if (action.equals(UPDATE)) {
 
-                        intent12.putExtra(ACTION_KEY,DELETE);
-                        intent12.putExtra(MED_ID_KEY,medId);
+
                         MainActivity.mbase.child(medId).removeValue();
 
                     }
 
-                    startActivity(intent12);
+                    startActivity(new Intent(ReminderEditorActivity.this,MainActivity.class));
 
                 }).setNegativeButton("No",null).show());
         /* End Button Functionality Section */

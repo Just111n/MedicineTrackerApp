@@ -15,11 +15,11 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ForgetPasswordActivity extends AppCompatActivity {
 
     private EditText emailResetEditText;
-    private Button resetPasswordButton;
+    private Button resetPasswordButton,forgetBackButton;
     private TextView resetInstructionTextView;
 
     private FirebaseAuth mAuth;
-    private Button forgetBackButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
