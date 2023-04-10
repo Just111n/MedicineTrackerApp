@@ -26,6 +26,7 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         Bundle bundle = intent.getExtras();
         String text = bundle.getString(Event_KEY);
         String date = bundle.getString(TIME_KEY);
@@ -48,8 +49,6 @@ public class AlarmBroadcast extends BroadcastReceiver {
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
         // TODO What the statement below is doing??
         contentView.setImageViewResource(R.id.icon, R.mipmap.ic_launcher);
-        PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-//        contentView.setOnClickPendingIntent(R.id.flashButton, pendingSwitchIntent);
         contentView.setTextViewText(R.id.message, text);
         contentView.setTextViewText(R.id.date, date);
         contentView.setTextViewText(R.id.dosage_textView,medDosage);

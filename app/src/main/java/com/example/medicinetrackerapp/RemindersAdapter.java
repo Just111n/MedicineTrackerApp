@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+// TODO DELETE LATER
 public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> {
 
     LayoutInflater mInflater;
@@ -53,7 +54,7 @@ public class RemindersAdapter extends RecyclerView.Adapter<RemindersAdapter.Remi
             holder.getMed_info_button().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, DrugView.class);
+                    Intent intent = new Intent(context, DrugViewActivity.class);
                     intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminder.getMedName());
                     intent.putExtra(ReminderEditorActivity.MED_ID_KEY, reminder.getId());
                     context.startActivity(intent);

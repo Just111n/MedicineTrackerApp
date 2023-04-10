@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     final static String CLIPBOARD_LABEL = "CLIPBOARD_LABEL";
     private FirebaseAuth mAuth;
     RecyclerView remindersRecyclerView;
-    RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> remindersAdapter;
+//    RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> remindersAdapter;
     FloatingActionButton addReminderFab;
 
     final static DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");

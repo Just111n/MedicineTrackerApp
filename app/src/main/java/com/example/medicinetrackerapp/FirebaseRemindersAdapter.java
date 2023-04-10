@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -106,7 +104,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, 
         holder.getMed_info_button().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, DrugView.class);
+                Intent intent = new Intent(context, DrugViewActivity.class);
                 intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminder.getMedName());
                 context.startActivity(intent);
             }

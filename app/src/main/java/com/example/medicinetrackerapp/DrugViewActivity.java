@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class DrugView extends AppCompatActivity {
+public class DrugViewActivity extends AppCompatActivity {
 
     private TextView drugName;
     FirebaseAuth mAuth;
@@ -31,7 +31,7 @@ public class DrugView extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null){
-            startActivity(new Intent(DrugView.this, LoginActivity.class));
+            startActivity(new Intent(DrugViewActivity.this, LoginActivity.class));
         }
     }
 }

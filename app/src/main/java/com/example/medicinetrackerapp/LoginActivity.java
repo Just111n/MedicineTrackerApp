@@ -40,16 +40,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    TextInputEditText etLoginEmail;
-    TextInputEditText etLoginPassword;
+    TextInputEditText etLoginEmail, etLoginPassword;
+    
     TextView tvRegisterHere;
     Button btnLogin;
 
     SignInButton googleSignInButton;
-    GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
-
-
 
 
 
@@ -75,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         googleSignInButton = findViewById(R.id.google_sign_in_button);
 
-       
+
 
 
 

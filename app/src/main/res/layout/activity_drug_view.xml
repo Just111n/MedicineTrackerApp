@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_margin="8dp"
     android:orientation="vertical"
-    tools:context=".DrugView"
+    tools:context=".DrugViewActivity"
     android:background="#FFF8F8"
     >
 

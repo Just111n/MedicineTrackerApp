@@ -21,7 +21,7 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".DrugView"
+            android:name=".DrugViewActivity"
             android:exported="false"
             android:label="Medicine Info"
             android:parentActivityName=".MainActivity" />
