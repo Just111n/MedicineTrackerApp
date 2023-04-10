@@ -33,14 +33,14 @@ import java.util.Date;
 public class ReminderEditorActivity extends AppCompatActivity {
 
     public static final String MED_ID_KEY = "MED_ID_KEY";
-    /* Views Section */
+
     Button medNotificationTimeButton, medNotificationTimeButton2, addReminderButton, deleteReminderButton;
     EditText editMedNameEditText;
 
     ImageButton pills_ImageButton, syrup_ImageButton, injection_ImageButton;
 
     String notificationTime;
-    /* End Views Section */
+
 
 
     EditText editDosageEditText;
@@ -222,6 +222,20 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 String medNotificationTime = medNotificationTimeButton.getText().toString().trim();
                 String medNotificationTime2 = medNotificationTimeButton2.getText().toString().trim();
                 String medType = "";
+                if (isPillsButtonClicked) {
+                    intent.putExtra(MED_TYPE_KEY,"pills");
+                    medType= "Pills";
+
+                }
+
+                if (isSyrupButtonClicked) {
+                    intent.putExtra(MED_TYPE_KEY,"syrup");
+                    medType= "Syrup";
+                }
+                if (isInjectionButtonClicked) {
+                    intent.putExtra(MED_TYPE_KEY,"injection");
+                    medType="Injection";
+                }
 
 
                 String medDosage = editDosageEditText.getText().toString();
@@ -242,24 +256,9 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 // TODO 1.0 submit data from ReminderEditorActivity to MainActivity
                 Intent intent = new Intent(ReminderEditorActivity.this, MainActivity.class);
                 intent.putExtra(ACTION_KEY, action);
-//                intent.putExtra(POSITION_KEY,position);
                 intent.putExtra(MED_NAME_KEY, medName);
                 intent.putExtra(MED_NOTIFICATION_TIMES_KEY,medNotificationTimes);
-                Log.d("imageButton",String.valueOf(isPillsButtonClicked));
-                if (isPillsButtonClicked) {
-                    intent.putExtra(MED_TYPE_KEY,"pills");
-                    Log.d("imageButton","if statement is running");
-                    medType="pills";
-                }
 
-                if (isSyrupButtonClicked) {
-                    intent.putExtra(MED_TYPE_KEY,"syrup");
-                    medType= "syrup";
-                }
-                if (isInjectionButtonClicked) {
-                    intent.putExtra(MED_TYPE_KEY,"injection");
-                    medType="injection";
-                }
 
                 intent.putExtra(MED_DOSAGE_KEY, medDosage);
 

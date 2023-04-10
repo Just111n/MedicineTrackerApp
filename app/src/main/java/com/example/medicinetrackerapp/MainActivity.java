@@ -1,10 +1,5 @@
 package com.example.medicinetrackerapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -17,6 +12,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
     final static String CLIPBOARD_LABEL = "CLIPBOARD_LABEL";
     private FirebaseAuth mAuth;
     RecyclerView remindersRecyclerView;
-//    RecyclerView.Adapter<RemindersAdapter.ReminderViewHolder> remindersAdapter;
     FloatingActionButton addReminderFab;
 
     final static DatabaseReference mbase = FirebaseDatabase.getInstance().getReference("reminders");
     FirebaseRemindersAdapter adapter;
+    ArrayList<Reminder> remindersList;
 
 
     // Creating options Menu
@@ -53,62 +53,44 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
+
+        int selectedMenuItemId = item.getItemId();
         mAuth = FirebaseAuth.getInstance();
 
-
-        mbase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                long  count = snapshot.getChildrenCount();
-                Log.d(FirebaseRemindersData.FIREBASE_TESTING,String.valueOf(count));
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-
-
-        });
-
-
-        if (item.getItemId() == R.id.profile_menu_item) {
-
-            Toast.makeText(getApplicationContext(), "count is clicked!", Toast.LENGTH_SHORT).show();
-
-            return true;
-        }
-        if (item.getItemId() == R.id.copy_menu_item) {
-//            String clipBoardData = remindersDataSource.toString();
-//            // Gets a handle to the clipboard service.
-//            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-//
-//            // Creates a new text clip to put on the clipboard.
-//            ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, clipBoardData);
-//
-//            // Set the clipboard's primary clip.
-//            clipboard.setPrimaryClip(clip);
-//
-//            // Only show a toast for Android 12 and lower.
-//            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-//                Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
-
-
-            Toast.makeText(getApplicationContext(), "copy  is clicked!", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        if (item.getItemId() == R.id.log_out_menu_item) {
-           mAuth.signOut();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-
-
-
-            return true;
+        StringBuilder clipBoardData = new StringBuilder();
+        for (Reminder reminder: remindersList) {
+            clipBoardData.append(reminder.toString());
+            clipBoardData.append("\n");
         }
 
-        return false;
+        switch (selectedMenuItemId) {
+            case R.id.copy_menu_item:
+                // Gets a handle to the clipboard service.
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+
+                // Creates a new text clip to put on the clipboard.
+                ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, clipBoardData.toString());
+
+                // Set the clipboard's primary clip.
+                clipboard.setPrimaryClip(clip);
+
+                // Only show a toast for Android 12 and lower.
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+                    Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
+
+                Log.d("copy", clipBoardData.toString());
+                Toast.makeText(getApplicationContext(), "Copied", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.log_out_menu_item:
+                mAuth.signOut();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                return true;
+
+            default:
+                return false;
+        }
+
     }
 
 
@@ -117,13 +99,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mAuth = FirebaseAuth.getInstance();
 
-
-        /* Find Views Section */
         addReminderFab = findViewById(R.id.add_reminder_fab);
         remindersRecyclerView = findViewById(R.id.reminders_recyclerView);
-        /* End Find Views Section */
 
 
         remindersRecyclerView.setLayoutManager(
@@ -136,59 +116,26 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new FirebaseRemindersAdapter(options,this);
         remindersRecyclerView.setAdapter(adapter);
-        Log.d(FirebaseRemindersData.FIREBASE_TESTING,"MainActivity onCreate Method is called");
 
 
-        // TODO 1.1 Receive data from ReminderEditorActivity to MainActivity
-        Intent intent = getIntent();
-        String action = intent.getStringExtra(ReminderEditorActivity.ACTION_KEY);
+        remindersList = new ArrayList<>();
+        mbase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                remindersList.clear();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    Reminder reminder = dataSnapshot.getValue(Reminder.class);
+                    remindersList.add(reminder);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
 
 
-        // Update/Delete reminder  =>  position >= 0
-        //  Create reminder =>  position == -1
-        //  open app => position == -2
-//        int position = intent.getIntExtra(ReminderEditorActivity.POSITION_KEY, -2);
-        String medId = intent.getStringExtra(ReminderEditorActivity.MED_ID_KEY);
-
-        if (action == null) {
-            action = "OPEN_APP";
-        }
-        /* Check action Section */
-//        switch (action) {
-//            case ReminderEditorActivity.CREATE:
-//                Reminder newReminder = new Reminder();
-//                newReminder.setMedName(newMedName);
-//                newReminder.setMedNotificationTimes(medNotificationTimes);
-//                newReminder.setMedDosage(medDosage);
-//                newReminder.setMedType(medType);
-////                remindersDataSource.addReminder(newReminder);
-//                String keyToAdd = mbase.push().getKey();
-//                newReminder.setId(keyToAdd);
-//                mbase.child(keyToAdd).setValue(newReminder);
-//
-////                remindersAdapter.notifyDataSetChanged();
-//                break;
-
-//            case ReminderEditorActivity.UPDATE:
-//                Reminder reminder = mbase.child("reminders")..getReminder(position);
-//                reminder.setMedName(newMedName);
-//                reminder.setMedNotificationTimes(medNotificationTimes);
-//                reminder.setMedType(medType);
-//                reminder.setMedDosage(medDosage);
-//                remindersDataSource.updateReminder(position, reminder);
-//                remindersAdapter.notifyItemChanged(position);
-//                break;
-//
-//            case ReminderEditorActivity.DELETE:
-//                if (position >= 0) {
-//                    //                    remindersAdapter.notifyItemRemoved(position);
-//                    mbase.child(medId).removeValue();
-//                }
-//                break;
-
-//        }
-        /* End Check action Section */
-
+        });
         addReminderFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -197,10 +144,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
-
 
     }
 

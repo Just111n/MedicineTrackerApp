@@ -16,6 +16,17 @@ public class Reminder {
 
     }
 
+    @Override
+    public String toString() {
+        String output = "";
+        output += this.getMedName() + "\n";
+        output += this.getMedType() + "\n";
+        String medNotificationTimesText = this.getMedNotificationTimes().toString();
+        output += medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1) + "\n";
+        output += this.getMedDosage() +"\n";
+        return output;
+    }
+
     public String getId() {
         return id;
     }
@@ -55,4 +66,6 @@ public class Reminder {
     public void setMedDosage(String medDosage) {
         this.medDosage = medDosage;
     }
+
+
 }

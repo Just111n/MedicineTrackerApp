@@ -30,7 +30,6 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, 
         super(options);
         this.context = context;
 
-        Log.d(FirebaseRemindersData.FIREBASE_TESTING,"RemindersFirebaseAdapter constructor is called");
 
     }
 
@@ -38,7 +37,6 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, 
     @Override
     public ReminderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.reminder_list_item, parent, false);
-
         return new FirebaseRemindersAdapter.ReminderViewHolder(itemView);
     }
 
@@ -154,8 +152,6 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<Reminder, 
         }
 
         public Button getMed_info_button() {return med_info_button;}
-
-
         /* End View Getters Section */
     }
 }

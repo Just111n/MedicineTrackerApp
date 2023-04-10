@@ -80,10 +80,11 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
                 android:gravity="center"
-                android:text="Type"
+                android:text="type"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:inputType="textCapWords"/>
 
         </LinearLayout>
 

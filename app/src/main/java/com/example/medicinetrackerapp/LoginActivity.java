@@ -41,29 +41,21 @@ public class LoginActivity extends AppCompatActivity {
 
 
     TextInputEditText etLoginEmail, etLoginPassword;
-    
     TextView tvRegisterHere;
     Button btnLogin;
-
     SignInButton googleSignInButton;
-
-
 
     private FirebaseAuth mAuth;
     private final static int RC_SIGN_IN = 123;
     private GoogleSignInClient mGoogleSignInClient;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
-
-
-
+        mAuth = FirebaseAuth.getInstance();
+        createRequest();
 
         etLoginEmail = findViewById(R.id.etLoginEmail);
         etLoginPassword = findViewById(R.id.etLoginPass);
@@ -73,24 +65,12 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
-
-        mAuth = FirebaseAuth.getInstance();
-        createRequest();
-
         googleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signIn();
-
-
-
             }
         });
-
-
-
-
         btnLogin.setOnClickListener(view -> {
             loginUser();
         });
@@ -137,16 +117,10 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                             startActivity(intent);
-
-
                         } else {
                             Toast.makeText(getApplicationContext(), "Sorry auth failed.", Toast.LENGTH_SHORT).show();
 
-
                         }
-
-
-                        // ...
                     }
                 });
     }
@@ -154,21 +128,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void createRequest() {
-
-
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
-
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-
     }
-
 
     private void loginUser(){
         String email = etLoginEmail.getText().toString();
