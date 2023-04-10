@@ -7,4 +7,7 @@
     <string name="user_log_in_fail">Log in Error: User not found</string>
     <string name="auth_fail">Sorry auth failed.</string>
     <string name="update_reminder">Update Reminder</string>
+    <string name="reminder_editor_name">Reminder Editor</string>
+    <string name="medical_info_name">Medicine Info</string>
+    <string name="no_med_info">No Medical Information about this Medicine</string>
 </resources>
