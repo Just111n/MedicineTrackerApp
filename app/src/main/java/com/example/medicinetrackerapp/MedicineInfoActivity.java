@@ -86,51 +86,75 @@ public class MedicineInfoActivity extends AppCompatActivity {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
-        executor.execute(() -> {
-            try {
-                String jsonResult = Utils.getMedInfoFromApi(medName);
-                Log.d(Utils.UTILS_TAG, "Try is running");
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String jsonResult = Utils.getMedInfoFromApi(medName);
+                    Log.d(Utils.UTILS_TAG, "Try is running");
 
-                // Check if jsonResult is not null
-                if (jsonResult != null) {
-                    String purpose = "";
-                    JSONObject jsonObject = new JSONObject(jsonResult);
-                    if (jsonObject.has("error")) {
-                        JSONObject errorObject = jsonObject.getJSONObject("error");
-                        String errorCode = errorObject.getString("code");
-                        String errorMessage = errorObject.getString("message");
+                    if (jsonResult != null) {
+                        String purpose = "";
+                        JSONObject jsonObject = new JSONObject(jsonResult);
+                        if (jsonObject.has("error")) {
+                            JSONObject errorObject = jsonObject.getJSONObject("error");
+                            String errorCode = errorObject.getString("code");
+                            String errorMessage = errorObject.getString("message");
 
-                        // Handle the error case
-                        System.out.println("Error Code: " + errorCode);
-                        System.out.println("Error Message: " + errorMessage);
+                            // Handle the error case
+                            System.out.println("Error Code: " + errorCode);
+                            System.out.println("Error Message: " + errorMessage);
 
+                            // Check if the error code is "NOT_FOUND"
+//                            if (errorCode.equalsIgnoreCase("NOT_FOUND")) {
+//                                purpose = "No matches found!";
+//                            }
+
+                        } else {
+                            JSONArray resultsArray = jsonObject.getJSONArray("results");
+                            JSONObject firstResult = resultsArray.getJSONObject(0);
+                            if (firstResult.has("purpose")) {
+                                JSONArray purposeArray = firstResult.getJSONArray("purpose");
+                                purpose = purposeArray.getString(0);
+                            } else {
+                                purpose = "Purpose not available";
+                            }
+
+                        }
+
+                        // Update UI on the main thread
+                        String finalPurpose = purpose;
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Update your TextViews or other UI components here
+                                tvMedDescription.setText(finalPurpose);
+                            }
+                        });
                     } else {
-                        JSONArray resultsArray = jsonObject.getJSONArray("results");
-                        JSONObject firstResult = resultsArray.getJSONObject(0);
-                        JSONArray purposeArray = firstResult.getJSONArray("purpose");
-                        purpose = purposeArray.getString(0);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvMedDescription.setText(R.string.no_med_info);
+                            }
+                        });
                     }
 
-                    // Update UI on the main thread
-                    String finalPurpose = purpose;
-                    handler.post(() -> {
-                        // Update your TextViews or other UI components here
-                        tvMedDescription.setText(finalPurpose);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvMedDescription.setText(R.string.no_med_info);
+                        }
                     });
-                } else {
-                    // Handle the case when jsonResult is null
-                    handler.post(() -> tvMedDescription.setText(R.string.no_med_info));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                handler.post(() -> tvMedDescription.setText(R.string.no_med_info));
-                // Handle the exception
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
             }
         });
     }
+
 
 
 
