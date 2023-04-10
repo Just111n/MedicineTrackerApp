@@ -224,17 +224,17 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 String medType = "";
                 if (isPillsButtonClicked) {
                     intent.putExtra(MED_TYPE_KEY,"pills");
-                    medType= "Pills";
+                    medType= "pills";
 
                 }
 
                 if (isSyrupButtonClicked) {
                     intent.putExtra(MED_TYPE_KEY,"syrup");
-                    medType= "Syrup";
+                    medType= "syrup";
                 }
                 if (isInjectionButtonClicked) {
                     intent.putExtra(MED_TYPE_KEY,"injection");
-                    medType="Injection";
+                    medType="injection";
                 }
 
 
