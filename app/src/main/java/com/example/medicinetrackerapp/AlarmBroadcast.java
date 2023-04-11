@@ -73,7 +73,7 @@ public class AlarmBroadcast extends BroadcastReceiver {
         }
 
         Notification notification = mBuilder.build();
-        int notificationId = 1;
+        int notificationId = (int) System.currentTimeMillis();
         notificationManager.notify(notificationId, notification);
 
 

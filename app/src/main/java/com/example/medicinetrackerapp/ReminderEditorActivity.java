@@ -1,14 +1,10 @@
 package com.example.medicinetrackerapp;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,11 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class ReminderEditorActivity extends AppCompatActivity {
 
@@ -118,14 +111,10 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
         pills_ImageButton.setOnClickListener(view -> {
             if (!isPillsButtonSelected) {
-                isPillsButtonSelected = true;
-                isSyrupButtonSelected = false;
-                isInjectionButtonSelected = false;
                 updateImageButtonBackground(true, false, false);
 
 
             } else {
-                isPillsButtonSelected = false;
                 updateImageButtonBackground(false,isSyrupButtonSelected,isInjectionButtonSelected);
             }
 
@@ -133,14 +122,9 @@ public class ReminderEditorActivity extends AppCompatActivity {
         });
         syrup_ImageButton.setOnClickListener(view -> {
             if (!isSyrupButtonSelected) {
-                isPillsButtonSelected = false;
-                isSyrupButtonSelected = true;
-                isInjectionButtonSelected = false;
                 updateImageButtonBackground(false, true, false);
 
             } else {
-                // If the button is not clicked, set the background color to the original color
-                isSyrupButtonSelected = false;
                 updateImageButtonBackground(isPillsButtonSelected, false,isInjectionButtonSelected);
             }
 
@@ -148,12 +132,8 @@ public class ReminderEditorActivity extends AppCompatActivity {
         });
         injection_ImageButton.setOnClickListener(view -> {
             if (!isInjectionButtonSelected) {
-                isPillsButtonSelected = false;
-                isSyrupButtonSelected = false;
-                isInjectionButtonSelected = true;
                 updateImageButtonBackground(false, false, true);
             } else {
-                isInjectionButtonSelected = false;
                 updateImageButtonBackground(isPillsButtonSelected,isSyrupButtonSelected, false);
             }
         });
@@ -176,15 +156,6 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
             String medDosage1 = editDosageEditText.getText().toString();
-
-
-
-            try {
-                setAlarm(medName1, medNotificationTime, medDosage1);
-            } catch (ParseException e) {
-                Log.d("testing","error");
-            }
-
 
             ArrayList<String> medNotificationTimes1 = new ArrayList<>();
             medNotificationTimes1.add(medNotificationTime);
@@ -246,22 +217,37 @@ public class ReminderEditorActivity extends AppCompatActivity {
     void updateImageButtonBackground(boolean isPillsSelected,boolean isSyrupSelected,boolean isInjectionSelected) {
         if (isPillsSelected) {
             pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+            isPillsButtonSelected = true;
+            isSyrupButtonSelected = false;
+            isInjectionButtonSelected = false;
         }
         else {
             pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+            isPillsButtonSelected = false;
+
         }
+
         if (isSyrupSelected) {
             syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+            isPillsButtonSelected = false;
+            isSyrupButtonSelected = true;
+            isInjectionButtonSelected = false;
         }
         else {
             syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+            isSyrupButtonSelected = false;
         }
 
         if (isInjectionSelected) {
             injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+            isPillsButtonSelected = false;
+            isSyrupButtonSelected = false;
+            isInjectionButtonSelected = true;
+
         }
         else {
             injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+            isInjectionButtonSelected = false;
         }
     }
 
@@ -305,44 +291,6 @@ public class ReminderEditorActivity extends AppCompatActivity {
         return time;
     }
     /* End Select Time Section */
-
-    private void setAlarm(String medName, String time, String medDosage) throws ParseException {
-        //assigning alarm manager object to set alarm
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        //sending data to alarm class to create channel and notification
-        Intent intent = new Intent(getApplicationContext(), AlarmBroadcast.class);
-        intent.putExtra(AlarmBroadcast.Event_KEY, medName);
-
-        intent.putExtra(AlarmBroadcast.TIME_KEY, time);
-        intent.putExtra(AlarmBroadcast.DOSAGE_KEY,medDosage);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
-
-        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
-        Date date = sdf.parse(time);
-        Calendar calendar1 = Calendar.getInstance();
-        assert date != null;
-        calendar1.setTime(date);
-        int hour = calendar1.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar1.get(Calendar.MINUTE);
-
-        // get current date and time
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-
-
-
-        long alarmTime = calendar.getTimeInMillis();
-
-        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
-
-
-
-
-    }
 
     @Override
     protected void onStart() {
