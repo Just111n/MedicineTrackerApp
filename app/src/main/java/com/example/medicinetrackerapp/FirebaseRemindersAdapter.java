@@ -64,10 +64,10 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
 
 //                    Reminder reminder = data.getReminder(position);
             new AlertDialog.Builder(context)
-                    .setTitle("Are you sure?")
-                    .setMessage("Do you want to delete this reminder?")
+                    .setTitle(R.string.are_you_sure)
+                    .setMessage(R.string.ask_delete_reminder)
                     .setIcon(R.drawable.ic_app)
-                    .setPositiveButton("Yes", (dialogInterface, i) -> MainActivity.mbase.child(medId).removeValue()).setNegativeButton("No",null).show();
+                    .setPositiveButton(R.string.yes, (dialogInterface, i) -> MainActivity.mbase.child(medId).removeValue()).setNegativeButton(R.string.no,null).show();
 
 
 

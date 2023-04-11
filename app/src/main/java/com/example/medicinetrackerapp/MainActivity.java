@@ -160,4 +160,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         adapter.stopListening();
     }
+
+
 }

@@ -1,57 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_margin="8dp"
-    android:orientation="vertical"
-    tools:context=".MedicineInfoActivity"
-    android:background="#FFF8F8"
-    >
-
-    <ImageView
-        android:id="@+id/drug_image"
-        android:layout_width="wrap_content"
+    android:fillViewport="true">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="wrap_content"
-        android:contentDescription="DrugImage"
-        android:layout_margin="10dp"
-        android:layout_gravity="center"
-        android:src="@drawable/drug_image_size" />
-
-    <TextView
-        android:id="@+id/tv_drug_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Drug's name"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_marginStart="10dp" />
-
-
-
-    <TextView
-        android:id="@+id/about_drug"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="2dp"
-        android:text="About Drug"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/med_description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Loading..."
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        />
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        tools:context=".MedicineInfoActivity"
+        android:background="#FFF8F8"
+        >
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/drug_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="DrugImage"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:src="@drawable/drug_image_size" />
+
+        <TextView
+            android:id="@+id/tv_drug_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drug's name"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginStart="10dp" />
+
+
+
+        <TextView
+            android:id="@+id/about_drug"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="2dp"
+            android:text="About Drug"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/med_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Loading..."
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            />
+
+    </LinearLayout>
+</ScrollView>

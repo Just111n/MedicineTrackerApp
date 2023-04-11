@@ -39,7 +39,7 @@ public class ForgetPasswordActivity extends AppCompatActivity {
             String emailAddress = emailResetEditText.getText().toString();
 
             if (TextUtils.isEmpty(emailAddress)){
-                emailResetEditText.setError("Email cannot be empty");
+                emailResetEditText.setError(getString(R.string.empty_email));
                 emailResetEditText.requestFocus();
             } else {
                 mAuth.sendPasswordResetEmail(emailAddress)

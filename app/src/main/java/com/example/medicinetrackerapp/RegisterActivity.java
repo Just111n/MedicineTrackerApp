@@ -48,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
             etRegEmail.setError(getString(R.string.empty_email));
             etRegEmail.requestFocus();
         }else if (TextUtils.isEmpty(password)){
-            etRegPassword.setError("Password cannot be empty");
+            etRegPassword.setError(getString(R.string.empty_password));
             etRegPassword.requestFocus();
         }else{
             mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {

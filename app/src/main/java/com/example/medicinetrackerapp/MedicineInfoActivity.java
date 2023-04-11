@@ -32,8 +32,11 @@ public class MedicineInfoActivity extends AppCompatActivity {
     final String ERROR_BAD_JSON = "Bad JSON Response";
     final String ERROR_HTTPS_ERROR = "HTTPS Error";
 
-    final String API_KEY = "aMchNi8ksgXCpONFYXBszSboK641yncpEWPA7v8g";
-    String urlString = "https://api.fda.gov/drug/label.json?api_key="+API_KEY+"&search=openfda.generic_name:aspirin";
+    final String INDICATIONS_AND_USAGE = "indications_and_usage";
+    final String RESULTS = "results";
+    final String ERROR = "error";
+    final String CODE = "code";
+    final String MESSAGE = "message";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +52,8 @@ public class MedicineInfoActivity extends AppCompatActivity {
 
         tvMedName.setText(medName);
         if ( Utils.isNetworkAvailable(MedicineInfoActivity.this)){
-            Log.d(Utils.UTILS_TAG,"if statemnt in onCLick is running");
             getMedInfo(medName);
         }else{
-            Log.d(Utils.UTILS_TAG,"else statemnt in onCLick is running");
             Toast.makeText(MedicineInfoActivity.this, ERROR_NO_NETWORK,
                     Toast.LENGTH_LONG).show();
         }
@@ -70,17 +71,7 @@ public class MedicineInfoActivity extends AppCompatActivity {
         }
     }
 
-    final static class Container<T>{
 
-        private T t;
-
-        T get(){
-            return t;
-        }
-        void set(T t ){
-            this.t = t;
-        }
-    }
 
     private void getMedInfo(final String medName) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -91,54 +82,36 @@ public class MedicineInfoActivity extends AppCompatActivity {
             public void run() {
                 try {
                     String jsonResult = Utils.getMedInfoFromApi(medName);
-                    Log.d(Utils.UTILS_TAG, "Try is running");
 
-                    if (jsonResult != null) {
-                        String purpose = "";
-                        JSONObject jsonObject = new JSONObject(jsonResult);
-                        if (jsonObject.has("error")) {
-                            JSONObject errorObject = jsonObject.getJSONObject("error");
-                            String errorCode = errorObject.getString("code");
-                            String errorMessage = errorObject.getString("message");
 
-                            // Handle the error case
-                            System.out.println("Error Code: " + errorCode);
-                            System.out.println("Error Message: " + errorMessage);
-
-                            // Check if the error code is "NOT_FOUND"
-//                            if (errorCode.equalsIgnoreCase("NOT_FOUND")) {
-//                                purpose = "No matches found!";
-//                            }
-
-                        } else {
-                            JSONArray resultsArray = jsonObject.getJSONArray("results");
-                            JSONObject firstResult = resultsArray.getJSONObject(0);
-                            if (firstResult.has("purpose")) {
-                                JSONArray purposeArray = firstResult.getJSONArray("purpose");
-                                purpose = purposeArray.getString(0);
-                            } else {
-                                purpose = "Purpose not available";
-                            }
-
-                        }
-
-                        // Update UI on the main thread
-                        String finalPurpose = purpose;
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Update your TextViews or other UI components here
-                                tvMedDescription.setText(finalPurpose);
-                            }
-                        });
-                    } else {
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvMedDescription.setText(R.string.no_med_info);
-                            }
-                        });
+                    if (jsonResult == null) {
+                        handler.post(() -> tvMedDescription.setText(R.string.no_med_info));
+                        return;
                     }
+
+                    JSONObject jsonObject = new JSONObject(jsonResult);
+
+                    if (jsonObject.has(ERROR)) {
+                        JSONObject errorObject = jsonObject.getJSONObject(ERROR);
+                        String errorCode = errorObject.getString(CODE);
+                        String errorMessage = errorObject.getString(MESSAGE);
+                        Log.d(Utils.UTILS_TAG,"Error Code:" + errorCode);
+                        Log.d(Utils.UTILS_TAG,"error Message:" + errorMessage);
+                        Toast.makeText(MedicineInfoActivity.this, "error Message:" + errorMessage, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    JSONArray resultsArray = jsonObject.getJSONArray(RESULTS);
+                    JSONObject firstResult = resultsArray.getJSONObject(0);
+                    String purpose = getString(R.string.purpose_not_available);
+
+                    if (firstResult.has(INDICATIONS_AND_USAGE)) {
+                        JSONArray purposeArray = firstResult.getJSONArray(INDICATIONS_AND_USAGE);
+                        purpose = purposeArray.getString(0);
+                    }
+
+                    String finalPurpose = purpose;
+                    handler.post(() -> tvMedDescription.setText(finalPurpose));
 
                 } catch (IOException e) {
                     e.printStackTrace();

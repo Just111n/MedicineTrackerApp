@@ -36,7 +36,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
     String notificationTime;
 
-    public final static String ACTION_KEY = "ACTION_KEY", CREATE = "CREATE", UPDATE = "UPDATE", DELETE = "DELETE";
+    public final static String ACTION_KEY = "ACTION_KEY", CREATE = "CREATE", UPDATE = "UPDATE";
 
     public final static String MED_NAME_KEY = "MED_NAME_KEY";
     public final static String MED_NOTIFICATION_TIMES_KEY = "NOTIFICATION_TIME_KEY";
@@ -115,75 +115,48 @@ public class ReminderEditorActivity extends AppCompatActivity {
         /* Button Functionality Section */
         medNotificationTimeButton.setOnClickListener(view -> selectTime(medNotificationTimeButton));
         medNotificationTimeButton2.setOnClickListener(view -> selectTime(medNotificationTimeButton2));
-        // TODO Image Buttons
-
 
         pills_ImageButton.setOnClickListener(view -> {
             if (!isPillsButtonSelected) {
-                // If the button is already clicked, set the background color to the original color
                 isPillsButtonSelected = true;
-                pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
-
-
                 isSyrupButtonSelected = false;
-                syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
-
                 isInjectionButtonSelected = false;
-                injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+                updateImageButtonBackground(true, false, false);
 
 
             } else {
-                // If the button is not clicked, set the background color to the new color
-                pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
                 isPillsButtonSelected = false;
+                updateImageButtonBackground(false,isSyrupButtonSelected,isInjectionButtonSelected);
             }
 
 
         });
         syrup_ImageButton.setOnClickListener(view -> {
             if (!isSyrupButtonSelected) {
-
                 isPillsButtonSelected = false;
-                pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
-
-
                 isSyrupButtonSelected = true;
-                syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
-
                 isInjectionButtonSelected = false;
-                injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+                updateImageButtonBackground(false, true, false);
 
             } else {
-                // If the button is not clicked, set the background color to the new color
-                syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+                // If the button is not clicked, set the background color to the original color
                 isSyrupButtonSelected = false;
+                updateImageButtonBackground(isPillsButtonSelected, false,isInjectionButtonSelected);
             }
 
 
         });
         injection_ImageButton.setOnClickListener(view -> {
             if (!isInjectionButtonSelected) {
-
                 isPillsButtonSelected = false;
-                pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
-
-
                 isSyrupButtonSelected = false;
-                syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
-
                 isInjectionButtonSelected = true;
-                injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
-
+                updateImageButtonBackground(false, false, true);
             } else {
-
-                injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
                 isInjectionButtonSelected = false;
+                updateImageButtonBackground(isPillsButtonSelected,isSyrupButtonSelected, false);
             }
-
-
         });
-
-
 
         addReminderButton.setOnClickListener(view -> {
             String medName1 = editMedNameEditText.getText().toString();
@@ -192,7 +165,6 @@ public class ReminderEditorActivity extends AppCompatActivity {
             String medType1 = "";
             if (isPillsButtonSelected) {
                 medType1 = "pills";
-
             }
 
             if (isSyrupButtonSelected) {
@@ -217,10 +189,6 @@ public class ReminderEditorActivity extends AppCompatActivity {
             ArrayList<String> medNotificationTimes1 = new ArrayList<>();
             medNotificationTimes1.add(medNotificationTime);
             medNotificationTimes1.add(medNotificationTime2);
-
-            // TODO 1.0 submit data from ReminderEditorActivity to MainActivity
-
-
 
             /* Check action Section */
             switch (action) {
@@ -248,11 +216,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), medName1 +" updated successfully", Toast.LENGTH_LONG).show();
                     break;
 
-                case ReminderEditorActivity.DELETE:
-                {
-                    MainActivity.mbase.child(medId).removeValue();
-                }
-                    break;
+
 
             }
             /* End Check action Section */
@@ -262,24 +226,44 @@ public class ReminderEditorActivity extends AppCompatActivity {
         });
 
         deleteReminderButton.setOnClickListener(view -> new AlertDialog.Builder(ReminderEditorActivity.this)
-                .setTitle("Are you sure?")
-                .setMessage("Do you want to delete this reminder?")
+                .setTitle(getString(R.string.are_you_sure))
+                .setMessage(getString(R.string.ask_delete_reminder))
                 .setIcon(R.drawable.ic_app)
-                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                .setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
 
                     if (action.equals(UPDATE)) {
-
-
                         MainActivity.mbase.child(medId).removeValue();
 
                     }
 
                     startActivity(new Intent(ReminderEditorActivity.this,MainActivity.class));
 
-                }).setNegativeButton("No",null).show());
+                }).setNegativeButton(getString(R.string.no),null).show());
         /* End Button Functionality Section */
 
     }// END of onCreate
+
+    void updateImageButtonBackground(boolean isPillsSelected,boolean isSyrupSelected,boolean isInjectionSelected) {
+        if (isPillsSelected) {
+            pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+        }
+        else {
+            pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+        }
+        if (isSyrupSelected) {
+            syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+        }
+        else {
+            syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+        }
+
+        if (isInjectionSelected) {
+            injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+        }
+        else {
+            injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+        }
+    }
 
 
 
@@ -348,14 +332,10 @@ public class ReminderEditorActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
-//        calendar.set(Calendar.SECOND, 0);
 
 
 
         long alarmTime = calendar.getTimeInMillis();
-
-        Log.d("testing","setAlarm can access date:"+ calendar.getTime());
-        Log.d("testing","setAlarm can access date:"+ alarmTime);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
 
