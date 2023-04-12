@@ -32,6 +32,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
      Context context;
 
 
+
     public FirebaseRemindersAdapter(@NonNull FirebaseRecyclerOptions options, Context context) {
         super(options);
         this.context = context;
@@ -50,12 +51,13 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
     @Override
     protected void onBindViewHolder(@NonNull ReminderViewHolder holder, int position, @NonNull ReminderModel reminderModel) {
         String medId = reminderModel.getId();
+        String medName = reminderModel.getMedName();
+        ArrayList<String> medNotificationTimes = reminderModel.getMedNotificationTimes();
+        String medType = reminderModel.getMedType();
+        String medDosage = reminderModel.getMedDosage();
 
         holder.getItemView().setOnClickListener(view -> {
-            String medName = reminderModel.getMedName();
-            ArrayList<String> medNotificationTimes = reminderModel.getMedNotificationTimes();
-            String medType = reminderModel.getMedType();
-            String medDosage = reminderModel.getMedDosage();
+
 
 
             // Click on reminder to Update and Send data to ReminderEditorActivity for data to be shown in data fields in ReminderEditorActivity
@@ -71,16 +73,11 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
 
         });
         holder.getItemView().setOnLongClickListener(view -> {
-
-//                    Reminder reminder = data.getReminder(position);
             new AlertDialog.Builder(context)
                     .setTitle(R.string.are_you_sure)
                     .setMessage(R.string.ask_delete_reminder)
                     .setIcon(R.drawable.ic_app)
-                    .setPositiveButton(R.string.yes, (dialogInterface, i) -> MainActivity.mbase.child(medId).removeValue()).setNegativeButton(R.string.no,null).show();
-
-
-
+                    .setPositiveButton(R.string.yes, (dialogInterface, i) -> MainActivity.mbase1UserReminders.child(medId).removeValue()).setNegativeButton(R.string.no,null).show();
             return true;
         });
 
@@ -96,12 +93,14 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
         // Click on med_info_button and send data to medInfoActivity
         holder.getMed_info_button().setOnClickListener(view -> {
             Intent intent = new Intent(context, MedicineInfoActivity.class);
-            intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, reminderModel.getMedName());
+            intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, medName);
             context.startActivity(intent);
         });
-        if (reminderModel.getMedNotificationTimes()!=null) {
+
+//         set time notifications
+        if (medNotificationTimes!=null) {
             try {
-            setAlarm(reminderModel.getMedName(),reminderModel.getMedDosage(),reminderModel.getMedNotificationTimes());
+            setAlarm(medId,medName,medDosage,medNotificationTimes);
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -156,24 +155,18 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
     }
 
 
-    private void setAlarm(String medName, String medDosage, ArrayList<String> times) throws ParseException {
+    private void setAlarm(String medId,String medName, String medDosage, ArrayList<String> times) throws ParseException {
+        int i = 0;
+        int earlierTime = 0;
+        Log.d(AlarmBroadcast.NOTI,"Start of setAlarm==========================");
         for (String time : times) {
+            i++;
             if (!isValidDate(time)) {
-                Log.e("testing", "Invalid time string: " + time);
+                Log.e(AlarmBroadcast.NOTI, "Invalid time string: " + time);
                 continue;
             }
             //assigning alarm manager object to set alarm
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-            //sending data to alarm class to create channel and notification
-            Intent intent = new Intent(context.getApplicationContext(), AlarmBroadcast.class);
-            intent.putExtra(AlarmBroadcast.Event_KEY, medName);
-            intent.putExtra(AlarmBroadcast.TIME_KEY, time);
-            intent.putExtra(AlarmBroadcast.DOSAGE_KEY, medDosage);
-            long uniqueId = System.currentTimeMillis();
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), (int) uniqueId, intent, PendingIntent.FLAG_ONE_SHOT);
-
             SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");
             Date date = sdf.parse(time);
             Calendar calendar1 = Calendar.getInstance();
@@ -188,17 +181,37 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
             // set time
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
+            calendar.set(Calendar.SECOND, 0);
 
             long alarmTime = calendar.getTimeInMillis();
 
+            Calendar nowCal = Calendar.getInstance();
+            long nowTime = nowCal.getTimeInMillis();
+            if (nowTime>alarmTime) {
+                Log.d(AlarmBroadcast.NOTI,"No alarm is set for timing: "+ i);
+
+                continue;
+            }
+
+
+
+            String digits = medId.replaceAll("[^\\d]", ""); // remove non-numeric characters
+            int number = Integer.parseInt(digits); // parse the resulting string as an integer
+            int notiId = number + i;
+            //sending data to alarm class to create channel and notification
+            Intent intent = createAlarmIntent(notiId,medName,time, medDosage,context.getApplicationContext());
+            // number + i => 2 timings will give 2 notificatiosn of different medince
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(),  notiId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+
+
             // Set a repeating alarm for each time in the list
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+            Log.d(AlarmBroadcast.NOTI,"Alarm is set for timing: "+ i);
+            Log.d(AlarmBroadcast.NOTI,"notiId:" + number);
         }
     }
-
-
-
-
 
     private boolean isValidDate(String dateStr) {
         DateFormat formatter = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -210,6 +223,16 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
             return false;
         }
     }
+
+    private Intent createAlarmIntent(int medNotiId,String medName, String time, String medDosage, Context context) {
+        Intent intent = new Intent(context.getApplicationContext(), AlarmBroadcast.class);
+        intent.putExtra(AlarmBroadcast.Event_KEY, medName);
+        intent.putExtra(AlarmBroadcast.TIME_KEY, time);
+        intent.putExtra(AlarmBroadcast.DOSAGE_KEY, medDosage);
+        intent.putExtra(AlarmBroadcast.NOTI_KEY,medNotiId);
+        return intent;
+    }
+
 
 
 

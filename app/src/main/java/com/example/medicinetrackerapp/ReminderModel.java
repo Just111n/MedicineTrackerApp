@@ -19,11 +19,11 @@ public class ReminderModel {
     @Override
     public String toString() {
         String output = "";
-        output += this.getMedName() + "\n";
-        output += this.getMedType() + "\n";
+        output += "Medication:"+this.getMedName() + "\n";
+        output += "Type: "+ this.getMedType() + "\n";
         String medNotificationTimesText = this.getMedNotificationTimes().toString();
-        output += medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1) + "\n";
-        output += this.getMedDosage() +"\n";
+        output += "Times: " + medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1) + "\n";
+        output += "Dose" + this.getMedDosage() + "\n";
         return output;
     }
 

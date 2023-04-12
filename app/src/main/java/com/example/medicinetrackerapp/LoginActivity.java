@@ -19,7 +19,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -61,15 +64,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
+
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -87,21 +86,32 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
-                        mAuth.getCurrentUser();
-                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        String uid = user.getUid();
+                        String email = acct.getEmail(); // get the user's email from the GoogleSignInAccount object
+
+                        // Create a new Firebase Realtime Database reference for the signed-in user
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users/" + uid);
+                        userRef.child("email").setValue(email); // set the user's email value in the database
+
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(intent);
                     } else {
-                        Toast.makeText(getApplicationContext(),getString(R.string.auth_fail) , Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(getApplicationContext(), getString(R.string.auth_fail), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+
+
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
 

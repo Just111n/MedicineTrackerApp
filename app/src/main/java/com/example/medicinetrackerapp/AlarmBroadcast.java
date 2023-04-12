@@ -18,8 +18,13 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
     public final static String Event_KEY = "EVENT_KEY";
     public final static String TIME_KEY = "TIME_KEY";
+    public final static String NOTI_KEY = "NOTI_KEY";
 
     public final static String DOSAGE_KEY = "DOSAGE_KEY";
+
+    String CHANNEL_ID = "notify_001";
+
+    final static String NOTI = "ALARMTAG";
 
 
 
@@ -29,28 +34,31 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
         Bundle bundle = intent.getExtras();
         String text = bundle.getString(Event_KEY);
-        String date = bundle.getString(TIME_KEY);
+        String time = bundle.getString(TIME_KEY);
         String medDosage = bundle.getString(DOSAGE_KEY);
-        Log.d("testing","AlarmBroadcast received time:"+date);
+        int notiID = bundle.getInt(NOTI_KEY);
+        Log.d(NOTI,"=========================");
+        Log.d(NOTI,"AlarmBroadcast received time:"+time);
+        Log.d(NOTI,text);
 
 
 
         //Click on Notification
-        Intent intent1 = new Intent(context, MainActivity.class);
-        intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent lauchMainActivityIntent = new Intent(context, MainActivity.class);
+        lauchMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         //Notification Builder
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, intent1, PendingIntent.FLAG_ONE_SHOT);
+        // PendingIntent should be used only once. If the user interacts with the notification, the PendingIntent will be deleted and subsequent attempts to use it will fail.
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, lauchMainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, "notify_001");
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
 
         //here we set all the properties for the notification
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
-        // TODO What the statement below is doing??
         contentView.setImageViewResource(R.id.icon, R.mipmap.ic_launcher);
         contentView.setTextViewText(R.id.message, text);
-        contentView.setTextViewText(R.id.date, date);
+        contentView.setTextViewText(R.id.date, time);
         contentView.setTextViewText(R.id.dosage_textView,medDosage);
         mBuilder.setSmallIcon(R.drawable.alarm);
         mBuilder.setAutoCancel(true);
@@ -64,17 +72,19 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
         //we have to create notification channel after api level 26
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String CHANNEL_ID = "CHANNEL_ID";
+            String channelName = "channel name";
 
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "channel name", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_HIGH);
             channel.enableVibration(true);
             notificationManager.createNotificationChannel(channel);
             mBuilder.setChannelId(CHANNEL_ID);
         }
 
         Notification notification = mBuilder.build();
-        int notificationId = (int) System.currentTimeMillis();
-        notificationManager.notify(notificationId, notification);
+        int notificationId = 1;
+        Log.d(NOTI,"notification ID: :"+notiID);
+        notificationManager.notify(notiID, notification);
+//        notificationManager.notify(notificationId, notification);
 
 
     }

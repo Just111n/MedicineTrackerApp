@@ -1,10 +1,14 @@
 package com.example.medicinetrackerapp;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -14,32 +18,42 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
 
 public class ReminderEditorActivity extends AppCompatActivity {
 
-    public static final String MED_ID_KEY = "MED_ID_KEY";
+
 
     private Button medNotificationTimeButton, medNotificationTimeButton2, addReminderButton, deleteReminderButton;
     private EditText editMedNameEditText, editDosageEditText;
 
-    private ImageButton pills_ImageButton, syrup_ImageButton, injection_ImageButton;
+    private ImageButton pillsImageButton, syrupImageButton, injectionImageButton;
 
     String notificationTime;
 
+
     public final static String ACTION_KEY = "ACTION_KEY", CREATE = "CREATE", UPDATE = "UPDATE";
 
-    public final static String MED_NAME_KEY = "MED_NAME_KEY";
-    public final static String MED_NOTIFICATION_TIMES_KEY = "NOTIFICATION_TIME_KEY";
-    public final static  String MED_DOSAGE_KEY = "MED_DOSAGE_KEY";
-    public  final static String MED_TYPE_KEY = "MED_TYPE_KEY";
+    public static final String MED_ID_KEY = "MED_ID_KEY", MED_NAME_KEY = "MED_NAME_KEY", MED_NOTIFICATION_TIMES_KEY = "NOTIFICATION_TIME_KEY", MED_DOSAGE_KEY = "MED_DOSAGE_KEY", MED_TYPE_KEY = "MED_TYPE_KEY";
 
-    boolean isPillsButtonSelected;
-    boolean isSyrupButtonSelected;
-    boolean isInjectionButtonSelected;
-    FirebaseAuth mAuth;
+    public final static String PILLS = "pills", SYRUP = "syrup", INJECTION = "injection";
+    private boolean isPillsButtonSelected, isSyrupButtonSelected, isInjectionButtonSelected;
+    private FirebaseAuth mAuth;
+
+    private String uid;
+    private  DatabaseReference mbaseUser;
+    private DatabaseReference mbaseUserReminders;
+
 
 
     @Override
@@ -48,15 +62,20 @@ public class ReminderEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reminder_editor);
 
         mAuth = FirebaseAuth.getInstance();
-         isPillsButtonSelected = false;
-         isSyrupButtonSelected = false;
-         isInjectionButtonSelected = false;
+        uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+
+        mbaseUser = FirebaseDatabase.getInstance().getReference("users"+"/"+uid);
+        mbaseUserReminders = FirebaseDatabase.getInstance().getReference("users"+"/"+uid+"/"+"reminders");
+
+        isPillsButtonSelected = false;
+        isSyrupButtonSelected = false;
+        isInjectionButtonSelected = false;
 
 
         editMedNameEditText = findViewById(R.id.edit_medName_editText);
-        pills_ImageButton = findViewById(R.id.pills_ImageButton);
-        syrup_ImageButton = findViewById(R.id.syrup_ImageButton);
-        injection_ImageButton = findViewById(R.id.injection_ImageButton);
+        pillsImageButton = findViewById(R.id.pills_ImageButton);
+        syrupImageButton = findViewById(R.id.syrup_ImageButton);
+        injectionImageButton = findViewById(R.id.injection_ImageButton);
         editDosageEditText = findViewById(R.id.Dosage_edittext);
         medNotificationTimeButton = findViewById(R.id.med_notification_time_button);
         medNotificationTimeButton2 = findViewById(R.id.med_notification_time_button2);
@@ -65,133 +84,55 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
 
-        // From MainActivity
+        // Receive data from MainActivity
         Intent intent = getIntent();
         String action = intent.getStringExtra(ACTION_KEY);
         String medId = intent.getStringExtra(MED_ID_KEY);
         ArrayList<String> medNotificationTimes = intent.getStringArrayListExtra(MED_NOTIFICATION_TIMES_KEY);
         String medName = intent.getStringExtra(MED_NAME_KEY);
-
         String medType = intent.getStringExtra(MED_TYPE_KEY);
-
         String medDosage = intent.getStringExtra(MED_DOSAGE_KEY);
 
 
-        // TODO SET DATA TO NOTE DATA
+
         if (action.equals(UPDATE)) {
-            editMedNameEditText.setText(medName);
-            medNotificationTimeButton.setText(medNotificationTimes.get(0));
-            medNotificationTimeButton2.setText(medNotificationTimes.get(1));
-            switch (medType) {
-                case "pills":
-                    pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
-                    isPillsButtonSelected = true;
-
-                    break;
-                case "syrup":
-                    syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
-                    isSyrupButtonSelected = true;
-
-                    break;
-                case "injection":
-                    injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
-                    isInjectionButtonSelected = true;
-                    break;
-
-            }
-            editDosageEditText.setText(medDosage);
-
-            addReminderButton.setText(R.string.update_reminder);
-
+            showMedDataInViews(medName,medNotificationTimes,medType,medDosage);
         }
 
-        /* Button Functionality Section */
+
         medNotificationTimeButton.setOnClickListener(view -> selectTime(medNotificationTimeButton));
         medNotificationTimeButton2.setOnClickListener(view -> selectTime(medNotificationTimeButton2));
-
-        pills_ImageButton.setOnClickListener(view -> {
-            if (!isPillsButtonSelected) {
-                updateImageButtonBackground(true, false, false);
-
-
-            } else {
-                updateImageButtonBackground(false,isSyrupButtonSelected,isInjectionButtonSelected);
-            }
-
-
-        });
-        syrup_ImageButton.setOnClickListener(view -> {
-            if (!isSyrupButtonSelected) {
-                updateImageButtonBackground(false, true, false);
-
-            } else {
-                updateImageButtonBackground(isPillsButtonSelected, false,isInjectionButtonSelected);
-            }
-
-
-        });
-        injection_ImageButton.setOnClickListener(view -> {
-            if (!isInjectionButtonSelected) {
-                updateImageButtonBackground(false, false, true);
-            } else {
-                updateImageButtonBackground(isPillsButtonSelected,isSyrupButtonSelected, false);
-            }
-        });
-
+        pillsImageButton.setOnClickListener(view -> updateImageButtonBackground(!isPillsButtonSelected, false, false));
+        syrupImageButton.setOnClickListener(view -> updateImageButtonBackground(false, !isSyrupButtonSelected, false));
+        injectionImageButton.setOnClickListener(view -> updateImageButtonBackground(false, false, !isInjectionButtonSelected));
         addReminderButton.setOnClickListener(view -> {
-            String medName1 = editMedNameEditText.getText().toString();
-            String medNotificationTime = medNotificationTimeButton.getText().toString().trim();
-            String medNotificationTime2 = medNotificationTimeButton2.getText().toString().trim();
-            String medType1 = "";
+            String medNameSubmit = editMedNameEditText.getText().toString();
+            String medNotificationTimeSubmit = medNotificationTimeButton.getText().toString().trim();
+            String medNotificationTimeSubmit2 = medNotificationTimeButton2.getText().toString().trim();
+            String medTypeSubmit = "";
             if (isPillsButtonSelected) {
-                medType1 = "pills";
+                medTypeSubmit = PILLS;
             }
-
             if (isSyrupButtonSelected) {
-                medType1 = "syrup";
+                medTypeSubmit = SYRUP;
             }
             if (isInjectionButtonSelected) {
-                medType1 ="injection";
+                medTypeSubmit = INJECTION;
             }
-
-
-            String medDosage1 = editDosageEditText.getText().toString();
-
-            ArrayList<String> medNotificationTimes1 = new ArrayList<>();
-            medNotificationTimes1.add(medNotificationTime);
-            medNotificationTimes1.add(medNotificationTime2);
-
-            /* Check action Section */
+            String medDosageSubmit = editDosageEditText.getText().toString();
+            ArrayList<String> medNotificationTimesSubmit = new ArrayList<>();
+            medNotificationTimesSubmit.add(medNotificationTimeSubmit);
+            medNotificationTimesSubmit.add(medNotificationTimeSubmit2);
             switch (action) {
                 case CREATE:
-                    ReminderModel newReminderModel = new ReminderModel();
-                    newReminderModel.setMedName(medName1);
-                    newReminderModel.setMedNotificationTimes(medNotificationTimes1);
-                    newReminderModel.setMedDosage(medDosage1);
-                    newReminderModel.setMedType(medType1);
-                    String keyToAdd = MainActivity.mbase.push().getKey();
-                    newReminderModel.setId(keyToAdd);
-                    assert keyToAdd != null;
-                    MainActivity.mbase.child(keyToAdd).setValue(newReminderModel);
-                    Toast.makeText(getApplicationContext(), medName1 +" added successfully", Toast.LENGTH_LONG).show();
+                    String newKey = mbaseUserReminders.push().getKey();
+                    addReminderToDatabase(newKey,medNameSubmit,medNotificationTimesSubmit,medDosageSubmit,medTypeSubmit);
                     break;
-
                 case ReminderEditorActivity.UPDATE:
-                    ReminderModel reminderModel = new ReminderModel();
-                    reminderModel.setMedName(medName1);
-                    reminderModel.setId(medId);
-                    reminderModel.setMedNotificationTimes(medNotificationTimes1);
-                    reminderModel.setMedType(medType1);
-                    reminderModel.setMedDosage(medDosage1);
-                    MainActivity.mbase.child(medId).setValue(reminderModel);
-                    Toast.makeText(getApplicationContext(), medName1 +" updated successfully", Toast.LENGTH_LONG).show();
+                   updateReminderInDatabase(medNameSubmit,medId,medNotificationTimesSubmit,medDosageSubmit,medTypeSubmit);
+
                     break;
-
-
-
             }
-            /* End Check action Section */
-
 
             startActivity(new Intent(ReminderEditorActivity.this,MainActivity.class));
         });
@@ -201,52 +142,53 @@ public class ReminderEditorActivity extends AppCompatActivity {
                 .setMessage(getString(R.string.ask_delete_reminder))
                 .setIcon(R.drawable.ic_app)
                 .setPositiveButton(getString(R.string.yes), (dialogInterface, i) -> {
-
                     if (action.equals(UPDATE)) {
-                        MainActivity.mbase.child(medId).removeValue();
-
+                        mbaseUserReminders.child(medId).removeValue();
                     }
-
                     startActivity(new Intent(ReminderEditorActivity.this,MainActivity.class));
-
                 }).setNegativeButton(getString(R.string.no),null).show());
-        /* End Button Functionality Section */
 
-    }// END of onCreate
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null){
+            startActivity(new Intent(ReminderEditorActivity.this, LoginActivity.class));
+        }
+    }
 
-    void updateImageButtonBackground(boolean isPillsSelected,boolean isSyrupSelected,boolean isInjectionSelected) {
+    private void updateImageButtonBackground(boolean isPillsSelected,boolean isSyrupSelected,boolean isInjectionSelected) {
         if (isPillsSelected) {
-            pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+            pillsImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
             isPillsButtonSelected = true;
             isSyrupButtonSelected = false;
             isInjectionButtonSelected = false;
         }
         else {
-            pills_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+            pillsImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
             isPillsButtonSelected = false;
-
         }
 
         if (isSyrupSelected) {
-            syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+            syrupImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
             isPillsButtonSelected = false;
             isSyrupButtonSelected = true;
             isInjectionButtonSelected = false;
         }
         else {
-            syrup_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+            syrupImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
             isSyrupButtonSelected = false;
         }
 
         if (isInjectionSelected) {
-            injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
+            injectionImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.purple_theme_dark)));
             isPillsButtonSelected = false;
             isSyrupButtonSelected = false;
             isInjectionButtonSelected = true;
-
         }
         else {
-            injection_ImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
+            injectionImageButton.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.button_background_colour)));
             isInjectionButtonSelected = false;
         }
     }
@@ -262,7 +204,7 @@ public class ReminderEditorActivity extends AppCompatActivity {
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, (timePicker, i, i1) -> {
             notificationTime = i + ":" + i1; //temp variable to store the time to set alarm
 
-            button.setText(FormatTime(i, i1));                                                //sets the button text as selected time
+            button.setText(FormatTime(i, i1)); //sets the button text as selected time
         }, hour, minute, false);
         timePickerDialog.show();
     }
@@ -292,14 +234,57 @@ public class ReminderEditorActivity extends AppCompatActivity {
     }
     /* End Select Time Section */
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null){
-            startActivity(new Intent(ReminderEditorActivity.this, LoginActivity.class));
+    private void showMedDataInViews(String medName, ArrayList<String> medNotificationTimes, String medType, String medDosage) {
+        editMedNameEditText.setText(medName);
+        medNotificationTimeButton.setText(medNotificationTimes.get(0));
+        medNotificationTimeButton2.setText(medNotificationTimes.get(1));
+        switch (medType) {
+            case PILLS:
+                updateImageButtonBackground(true, false, false);
+                break;
+            case SYRUP:
+                updateImageButtonBackground(false, true, false);
+                break;
+            case INJECTION:
+                updateImageButtonBackground(false, false, true);
+                break;
         }
+        editDosageEditText.setText(medDosage);
+        addReminderButton.setText(R.string.update_reminder);
     }
+
+    private void addReminderToDatabase(String newKey,String medNameSubmit, ArrayList<String> medNotificationTimesSubmit, String medDosageSubmit, String medTypeSubmit) {
+        ReminderModel newReminder = new ReminderModel();
+        newReminder.setMedName(medNameSubmit);
+        newReminder.setMedNotificationTimes(medNotificationTimesSubmit);
+        newReminder.setMedDosage(medDosageSubmit);
+        newReminder.setMedType(medTypeSubmit);
+
+        newReminder.setId(newKey);
+        assert newKey != null;
+        mbaseUserReminders.child(newKey).setValue(newReminder);
+        Toast.makeText(getApplicationContext(), medNameSubmit +" added successfully", Toast.LENGTH_LONG).show();
+    }
+
+    private void updateReminderInDatabase(String medNameSubmit, String medId, ArrayList<String> medNotificationTimesSubmit, String medDosageSubmit, String medTypeSubmit) {
+        ReminderModel reminder = new ReminderModel();
+        reminder.setMedName(medNameSubmit);
+        reminder.setId(medId);
+        reminder.setMedNotificationTimes(medNotificationTimesSubmit);
+        reminder.setMedType(medTypeSubmit);
+        reminder.setMedDosage(medDosageSubmit);
+        mbaseUserReminders.child(medId).setValue(reminder);
+        Toast.makeText(getApplicationContext(), medNameSubmit +" updated successfully", Toast.LENGTH_LONG).show();
+    }
+
+
+
+
+
+
+
+
+
 }
 
 

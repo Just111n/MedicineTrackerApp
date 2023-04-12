@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -53,6 +55,13 @@ public class RegisterActivity extends AppCompatActivity {
         }else{
             mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
+                    // User registered successfully, create a unique database reference
+                    String userId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
+
+                    // Store any user-specific data under this node
+                    userRef.child("email").setValue(email);
+
                     Toast.makeText(RegisterActivity.this, "User registered successfully", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                 } else{
@@ -61,5 +70,6 @@ public class RegisterActivity extends AppCompatActivity {
             });
         }
     }
+
 
 }
