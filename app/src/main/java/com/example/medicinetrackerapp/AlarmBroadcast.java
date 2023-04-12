@@ -32,6 +32,7 @@ public class AlarmBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+
         Bundle bundle = intent.getExtras();
         String text = bundle.getString(Event_KEY);
         String time = bundle.getString(TIME_KEY);
@@ -44,19 +45,22 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
 
         //Click on Notification
-        Intent lauchMainActivityIntent = new Intent(context, MainActivity.class);
-        lauchMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Intent launchMainActivityIntent = new Intent(context, MainActivity.class);
+        launchMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         //Notification Builder
         // PendingIntent should be used only once. If the user interacts with the notification, the PendingIntent will be deleted and subsequent attempts to use it will fail.
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, lauchMainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, launchMainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
+
+        PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
 
         //here we set all the properties for the notification
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
         contentView.setImageViewResource(R.id.icon, R.mipmap.ic_launcher);
+        contentView.setOnClickPendingIntent(R.id.flashButton, pendingSwitchIntent);
         contentView.setTextViewText(R.id.message, text);
         contentView.setTextViewText(R.id.date, time);
         contentView.setTextViewText(R.id.dosage_textView,medDosage);
