@@ -22,21 +22,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MedicineInfoActivity extends AppCompatActivity {
-
     private TextView tvMedName, tvMedDescription;
     private FirebaseAuth mAuth;
-
     final String ERROR_NO_NETWORK = "No Network";
-    final String ERROR_NOT_VALID = "Comic No Not Valid";
-    final String ERROR_MALFORMED_URL = "Malformed URL";
-    final String ERROR_BAD_JSON = "Bad JSON Response";
-    final String ERROR_HTTPS_ERROR = "HTTPS Error";
-
     final String INDICATIONS_AND_USAGE = "indications_and_usage";
-    final String RESULTS = "results";
-    final String ERROR = "error";
-    final String CODE = "code";
-    final String MESSAGE = "message";
+    final String RESULTS = "results", ERROR = "error", CODE = "code", MESSAGE = "message";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +35,9 @@ public class MedicineInfoActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-
         tvMedName = findViewById(R.id.tv_drug_name);
         tvMedDescription = findViewById(R.id.med_description);
+
         String medName = getIntent().getStringExtra(ReminderEditorActivity.MED_NAME_KEY);
 
         tvMedName.setText(medName);
@@ -57,11 +47,7 @@ public class MedicineInfoActivity extends AppCompatActivity {
             Toast.makeText(MedicineInfoActivity.this, ERROR_NO_NETWORK,
                     Toast.LENGTH_LONG).show();
         }
-
     }
-
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -71,59 +57,42 @@ public class MedicineInfoActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void getMedInfo(final String medName) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    String jsonResult = Utils.getMedInfoFromApi(medName);
-
-
-                    if (jsonResult == null) {
-                        handler.post(() -> tvMedDescription.setText(R.string.no_med_info));
-                        return;
-                    }
-
-                    JSONObject jsonObject = new JSONObject(jsonResult);
-
-                    if (jsonObject.has(ERROR)) {
-                        JSONObject errorObject = jsonObject.getJSONObject(ERROR);
-                        String errorCode = errorObject.getString(CODE);
-                        String errorMessage = errorObject.getString(MESSAGE);
-                        Log.d(Utils.UTILS_TAG,"Error Code:" + errorCode);
-                        Log.d(Utils.UTILS_TAG,"error Message:" + errorMessage);
-                        Toast.makeText(MedicineInfoActivity.this, "error Message:" + errorMessage, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    JSONArray resultsArray = jsonObject.getJSONArray(RESULTS);
-                    JSONObject firstResult = resultsArray.getJSONObject(0);
-                    String purpose = getString(R.string.purpose_not_available);
-
-                    if (firstResult.has(INDICATIONS_AND_USAGE)) {
-                        JSONArray purposeArray = firstResult.getJSONArray(INDICATIONS_AND_USAGE);
-                        purpose = purposeArray.getString(0);
-                    }
-
-                    String finalPurpose = purpose;
-                    handler.post(() -> tvMedDescription.setText(finalPurpose));
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvMedDescription.setText(R.string.no_med_info);
-                        }
-                    });
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+        executor.execute(() -> {
+            try {
+                String jsonResult = Utils.getMedInfoFromApi(medName);
+                if (jsonResult == null) {
+                    handler.post(() -> tvMedDescription.setText(R.string.no_med_info));
+                    return;
                 }
+                JSONObject jsonObject = new JSONObject(jsonResult);
+                if (jsonObject.has(ERROR)) {
+                    JSONObject errorObject = jsonObject.getJSONObject(ERROR);
+                    String errorCode = errorObject.getString(CODE);
+                    String errorMessage = errorObject.getString(MESSAGE);
+                    Toast.makeText(MedicineInfoActivity.this, "error Message:" + errorMessage, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                JSONArray resultsArray = jsonObject.getJSONArray(RESULTS);
+                JSONObject firstResult = resultsArray.getJSONObject(0);
+                String purpose = getString(R.string.purpose_not_available);
+
+                if (firstResult.has(INDICATIONS_AND_USAGE)) {
+                    JSONArray purposeArray = firstResult.getJSONArray(INDICATIONS_AND_USAGE);
+                    purpose = purposeArray.getString(0);
+                }
+
+                String finalPurpose = purpose;
+                handler.post(() -> tvMedDescription.setText(finalPurpose));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                handler.post(() -> tvMedDescription.setText(R.string.no_med_info));
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
         });
     }

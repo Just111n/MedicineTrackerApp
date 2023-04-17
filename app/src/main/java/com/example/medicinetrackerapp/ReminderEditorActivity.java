@@ -1,14 +1,10 @@
 package com.example.medicinetrackerapp;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,38 +17,26 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
 public class ReminderEditorActivity extends AppCompatActivity {
-
-
-
     private Button medNotificationTimeButton, medNotificationTimeButton2, addReminderButton, deleteReminderButton;
     private EditText editMedNameEditText, editDosageEditText;
-
     private ImageButton pillsImageButton, syrupImageButton, injectionImageButton;
-
-    String notificationTime;
-
 
     public final static String ACTION_KEY = "ACTION_KEY", CREATE = "CREATE", UPDATE = "UPDATE";
 
-    public static final String MED_ID_KEY = "MED_ID_KEY", MED_NAME_KEY = "MED_NAME_KEY", MED_NOTIFICATION_TIMES_KEY = "NOTIFICATION_TIME_KEY", MED_DOSAGE_KEY = "MED_DOSAGE_KEY", MED_TYPE_KEY = "MED_TYPE_KEY";
-
+    public static final String MED_ID_KEY = "MED_ID_KEY", MED_NAME_KEY = "MED_NAME_KEY", MED_NOTIFICATION_TIMES_KEY = "NOTIFICATION_TIME_KEY",
+            MED_DOSAGE_KEY = "MED_DOSAGE_KEY", MED_TYPE_KEY = "MED_TYPE_KEY";
     public final static String PILLS = "pills", SYRUP = "syrup", INJECTION = "injection";
     private boolean isPillsButtonSelected, isSyrupButtonSelected, isInjectionButtonSelected;
     private FirebaseAuth mAuth;
 
     private String uid;
-    private  DatabaseReference mbaseUser;
     private DatabaseReference mbaseUserReminders;
+
 
 
 
@@ -61,10 +45,10 @@ public class ReminderEditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder_editor);
 
+
         mAuth = FirebaseAuth.getInstance();
         uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
-        mbaseUser = FirebaseDatabase.getInstance().getReference("users"+"/"+uid);
         mbaseUserReminders = FirebaseDatabase.getInstance().getReference("users"+"/"+uid+"/"+"reminders");
 
         isPillsButtonSelected = false;
@@ -93,12 +77,9 @@ public class ReminderEditorActivity extends AppCompatActivity {
         String medType = intent.getStringExtra(MED_TYPE_KEY);
         String medDosage = intent.getStringExtra(MED_DOSAGE_KEY);
 
-
-
         if (action.equals(UPDATE)) {
-            showMedDataInViews(medName,medNotificationTimes,medType,medDosage);
+            showReminderDataInViews(medName,medNotificationTimes,medType,medDosage);
         }
-
 
         medNotificationTimeButton.setOnClickListener(view -> selectTime(medNotificationTimeButton));
         medNotificationTimeButton2.setOnClickListener(view -> selectTime(medNotificationTimeButton2));
@@ -199,17 +180,15 @@ public class ReminderEditorActivity extends AppCompatActivity {
     /* Select Time Section */
     private void selectTime(Button button) {
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this, (timePicker, i, i1) -> {
-            notificationTime = i + ":" + i1; //temp variable to store the time to set alarm
-
-            button.setText(FormatTime(i, i1)); //sets the button text as selected time
-        }, hour, minute, false);
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int currentMinute = calendar.get(Calendar.MINUTE);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, (timePicker, hourOfDay, minute) -> {
+            button.setText(FormatTimeTo12h(hourOfDay, minute)); //sets the button text as selected time
+        }, currentHour, currentMinute, false);
         timePickerDialog.show();
     }
 
-    private String FormatTime(int hour, int minute) {
+    private String FormatTimeTo12h(int hourOfDay, int minute) {
         String time;
         String formattedMinute;
 
@@ -220,21 +199,21 @@ public class ReminderEditorActivity extends AppCompatActivity {
         }
 
 
-        if (hour == 0) {
+        if (hourOfDay == 0) {
             time = "12" + ":" + formattedMinute + " AM";
-        } else if (hour < 12) {
-            time = hour + ":" + formattedMinute + " AM";
-        } else if (hour == 12) {
+        } else if (hourOfDay < 12) {
+            time = hourOfDay + ":" + formattedMinute + " AM";
+        } else if (hourOfDay == 12) {
             time = "12" + ":" + formattedMinute + " PM";
         } else {
-            int temp = hour - 12;
+            int temp = hourOfDay - 12;
             time = temp + ":" + formattedMinute + " PM";
         }
         return time;
     }
     /* End Select Time Section */
 
-    private void showMedDataInViews(String medName, ArrayList<String> medNotificationTimes, String medType, String medDosage) {
+    private void showReminderDataInViews(String medName, ArrayList<String> medNotificationTimes, String medType, String medDosage) {
         editMedNameEditText.setText(medName);
         medNotificationTimeButton.setText(medNotificationTimes.get(0));
         medNotificationTimeButton2.setText(medNotificationTimes.get(1));
@@ -259,7 +238,6 @@ public class ReminderEditorActivity extends AppCompatActivity {
         newReminder.setMedNotificationTimes(medNotificationTimesSubmit);
         newReminder.setMedDosage(medDosageSubmit);
         newReminder.setMedType(medTypeSubmit);
-
         newReminder.setId(newKey);
         assert newKey != null;
         mbaseUserReminders.child(newKey).setValue(newReminder);

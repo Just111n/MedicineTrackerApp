@@ -54,17 +54,11 @@ public class LoginActivity extends AppCompatActivity {
         forgetPasswordTextView = findViewById(R.id.forgot_password_textView);
         googleSignInButton = findViewById(R.id.google_sign_in_button);
 
-
-
-        googleSignInButton.setOnClickListener(view -> signIn());
+        googleSignInButton.setOnClickListener(view -> googleSignIn());
         btnLogin.setOnClickListener(view -> loginUser());
         tvRegisterHere.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
         forgetPasswordTextView.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this,ForgetPasswordActivity.class)));
     }
-
-
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -92,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         FirebaseUser user = mAuth.getCurrentUser();
+                        assert user != null;
                         String uid = user.getUid();
                         String email = acct.getEmail(); // get the user's email from the GoogleSignInAccount object
 
@@ -109,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    private void signIn() {
+    private void googleSignIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }

@@ -40,7 +40,7 @@
         </LinearLayout>
 
         <TextView
-            android:layout_width="390dp"
+            android:layout_width="400dp"
             android:layout_height="40dp"
             android:background="@drawable/partial_roundcorners"
             android:backgroundTint="#6BA087FF"
@@ -80,7 +80,7 @@
             android:id="@+id/reminders_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="35dp"
+            android:layout_marginLeft="45dp"
             android:layout_marginTop="208dp"
             android:layout_weight="0.8"
             app:layout_constraintEnd_toEndOf="parent"

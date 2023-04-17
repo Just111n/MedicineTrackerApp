@@ -19,16 +19,9 @@ public class AlarmBroadcast extends BroadcastReceiver {
     public final static String Event_KEY = "EVENT_KEY";
     public final static String TIME_KEY = "TIME_KEY";
     public final static String NOTI_KEY = "NOTI_KEY";
-
     public final static String DOSAGE_KEY = "DOSAGE_KEY";
-
     String CHANNEL_ID = "notify_001";
-
     final static String NOTI = "ALARMTAG";
-
-
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -42,8 +35,6 @@ public class AlarmBroadcast extends BroadcastReceiver {
         Log.d(NOTI,"AlarmBroadcast received time:"+time);
         Log.d(NOTI,text);
 
-
-
         //Click on Notification
         Intent launchMainActivityIntent = new Intent(context, MainActivity.class);
         launchMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -55,7 +46,6 @@ public class AlarmBroadcast extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
         PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-
 
         //here we set all the properties for the notification
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
@@ -89,8 +79,6 @@ public class AlarmBroadcast extends BroadcastReceiver {
         Log.d(NOTI,"notification ID: :"+notiID);
         notificationManager.notify(notiID, notification);
 //        notificationManager.notify(notificationId, notification);
-
-
     }
 }
 

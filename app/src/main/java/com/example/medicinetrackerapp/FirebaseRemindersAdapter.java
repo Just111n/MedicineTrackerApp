@@ -33,7 +33,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
 
 
 
-    public FirebaseRemindersAdapter(@NonNull FirebaseRecyclerOptions options, Context context) {
+    public FirebaseRemindersAdapter(@NonNull FirebaseRecyclerOptions<ReminderModel> options, Context context) {
         super(options);
         this.context = context;
 
@@ -56,11 +56,25 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
         String medType = reminderModel.getMedType();
         String medDosage = reminderModel.getMedDosage();
 
+
+        holder.getMed_name_value_text_view().setText(medName);
+        holder.getMed_type_value_text_view().setText(medType);
+
+        String medNotificationTimesText = medNotificationTimes.toString();
+        medNotificationTimesText = medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
+        holder.getMed_notification_time_value_text_view().setText(medNotificationTimesText);
+
+        holder.getMed_dosage_value_text_view().setText(reminderModel.getMedDosage());
+
+        // Click on med_info_button and send data to medInfoActivity
+        holder.getMed_info_button().setOnClickListener(view -> {
+            Intent intent = new Intent(context, MedicineInfoActivity.class);
+            intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, medName);
+            context.startActivity(intent);
+        });
+
+        // Click on reminder to Update and Send data to ReminderEditorActivity for data to be shown in data fields in ReminderEditorActivity
         holder.getItemView().setOnClickListener(view -> {
-
-
-
-            // Click on reminder to Update and Send data to ReminderEditorActivity for data to be shown in data fields in ReminderEditorActivity
             Intent intent = new Intent(context,ReminderEditorActivity.class);
             intent.putExtra(ReminderEditorActivity.ACTION_KEY,ReminderEditorActivity.UPDATE);
             intent.putExtra(ReminderEditorActivity.MED_ID_KEY,medId);
@@ -69,8 +83,6 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
             intent.putExtra(ReminderEditorActivity.MED_TYPE_KEY, medType);
             intent.putExtra(ReminderEditorActivity.MED_DOSAGE_KEY, medDosage);
             context.startActivity(intent);
-
-
         });
         holder.getItemView().setOnLongClickListener(view -> {
             new AlertDialog.Builder(context)
@@ -81,31 +93,12 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
             return true;
         });
 
-        holder.getMed_name_value_text_view().setText(reminderModel.getMedName());
-        holder.getMed_type_value_text_view().setText(reminderModel.getMedType());
-
-        String medNotificationTimesText = reminderModel.getMedNotificationTimes().toString();
-        medNotificationTimesText = medNotificationTimesText.substring(1, medNotificationTimesText.length() - 1);
-
-        holder.getMed_notification_time_value_text_view().setText(medNotificationTimesText);
-        holder.getMed_dosage_value_text_view().setText(reminderModel.getMedDosage());
-
-        // Click on med_info_button and send data to medInfoActivity
-        holder.getMed_info_button().setOnClickListener(view -> {
-            Intent intent = new Intent(context, MedicineInfoActivity.class);
-            intent.putExtra(ReminderEditorActivity.MED_NAME_KEY, medName);
-            context.startActivity(intent);
-        });
-
-//         set time notifications
-        if (medNotificationTimes!=null) {
-            try {
-            setAlarm(medId,medName,medDosage,medNotificationTimes);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
+        // Set timed notifications
+        try {
+        setAlarm(medId,medName,medDosage,medNotificationTimes);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
-
 
 
     }
@@ -113,13 +106,9 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
 
 
     class ReminderViewHolder extends RecyclerView.ViewHolder {
-
         private View itemView;
-
         private TextView med_name_value_text_view, med_type_value_text_view, med_notification_time_value_text_view, med_dosage_value_text_view;
-
         private Button med_info_button;
-
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
@@ -129,40 +118,29 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
             med_dosage_value_text_view = itemView.findViewById(R.id.med_dosage_value_text_view);
             med_info_button = itemView.findViewById(R.id.med_info_button);
         }
-        /* View Getters Section */
         public View getItemView() {
             return itemView;
         }
-
         public TextView getMed_name_value_text_view() {
             return med_name_value_text_view;
         }
-
         public TextView getMed_type_value_text_view() {
             return med_type_value_text_view;
         }
-
         public TextView getMed_notification_time_value_text_view() {
             return med_notification_time_value_text_view;
         }
-
         public TextView getMed_dosage_value_text_view() {
             return med_dosage_value_text_view;
         }
-
         public Button getMed_info_button() {return med_info_button;}
         /* End View Getters Section */
     }
-
-
     private void setAlarm(String medId,String medName, String medDosage, ArrayList<String> times) throws ParseException {
         int i = 0;
-        int earlierTime = 0;
-        Log.d(AlarmBroadcast.NOTI,"Start of setAlarm==========================");
         for (String time : times) {
             i++;
             if (!isValidDate(time)) {
-                Log.e(AlarmBroadcast.NOTI, "Invalid time string: " + time);
                 continue;
             }
             //assigning alarm manager object to set alarm
@@ -188,28 +166,21 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
             Calendar nowCal = Calendar.getInstance();
             long nowTime = nowCal.getTimeInMillis();
             if (nowTime>alarmTime) {
-                Log.d(AlarmBroadcast.NOTI,"No alarm is set for timing: "+ i);
-
                 continue;
             }
-
-
-
-            String digits = medId.replaceAll("[^\\d]", ""); // remove non-numeric characters
+            String digits = medId.replaceAll("\\D", ""); // remove non-numeric characters
             int number = Integer.parseInt(digits); // parse the resulting string as an integer
             int notiId = number + i;
+
             //sending data to alarm class to create channel and notification
             Intent intent = createAlarmIntent(notiId,medName,time, medDosage,context.getApplicationContext());
-            // number + i => 2 timings will give 2 notificatiosn of different medince
+
+            // number + i => 2 timings will give 2 notifications of different medicine
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(),  notiId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
-
-
-            // Set a repeating alarm for each time in the list
+            // Set alarm for each time in the list
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
-            Log.d(AlarmBroadcast.NOTI,"Alarm is set for timing: "+ i);
-            Log.d(AlarmBroadcast.NOTI,"notiId:" + number);
+
         }
     }
 

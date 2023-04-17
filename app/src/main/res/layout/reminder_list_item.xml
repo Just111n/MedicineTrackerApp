@@ -11,7 +11,7 @@
         android:layout_height="246dp"
         android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:background="@drawable/roundcorners2"
+        android:background="@drawable/roundcorners1"
         android:backgroundTint="#99F6DAF0"
         android:orientation="vertical"
         android:padding="16dp">
