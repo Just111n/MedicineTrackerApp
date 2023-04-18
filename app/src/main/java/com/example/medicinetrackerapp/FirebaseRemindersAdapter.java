@@ -175,8 +175,10 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
             //sending data to alarm class to create channel and notification
             Intent intent = createAlarmIntent(notiId,medName,time, medDosage,context.getApplicationContext());
 
+
             // number + i => 2 timings will give 2 notifications of different medicine
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(),  notiId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), notiId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
 
             // Set alarm for each time in the list
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
