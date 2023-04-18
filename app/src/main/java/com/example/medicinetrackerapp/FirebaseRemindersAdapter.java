@@ -138,6 +138,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
     }
     private void setAlarm(String medId,String medName, String medDosage, ArrayList<String> times) throws ParseException {
         int i = 0;
+        Log.d(AlarmBroadcast.NOTI,"SETTING THE ALARM FOR NOTIFICATIONS!");
         for (String time : times) {
             i++;
             if (!isValidDate(time)) {
@@ -182,6 +183,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
 
             // Set alarm for each time in the list
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+            Log.d(AlarmBroadcast.NOTI,"Alarm" +i+" is Set");
 
         }
     }

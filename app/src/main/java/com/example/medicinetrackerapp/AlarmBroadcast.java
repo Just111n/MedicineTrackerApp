@@ -1,5 +1,6 @@
 package com.example.medicinetrackerapp;
-import android.annotation.SuppressLint;
+
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,7 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 public class AlarmBroadcast extends BroadcastReceiver {
 
@@ -20,18 +23,18 @@ public class AlarmBroadcast extends BroadcastReceiver {
     public final static String TIME_KEY = "TIME_KEY";
     public final static String NOTI_KEY = "NOTI_KEY";
     public final static String DOSAGE_KEY = "DOSAGE_KEY";
-    String CHANNEL_ID = "notify_001";
+    final private String CHANNEL_ID = "notify_001";
     final static String NOTI = "ALARMTAG";
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     public void onReceive(Context context, Intent intent) {
-
 
         Bundle bundle = intent.getExtras();
         String text = bundle.getString(Event_KEY);
         String time = bundle.getString(TIME_KEY);
         String medDosage = bundle.getString(DOSAGE_KEY);
         int notiID = bundle.getInt(NOTI_KEY);
-        Log.d(NOTI,"=========================");
+        Log.d(NOTI,"NOTIFICATION IS SENT!");
         Log.d(NOTI,"AlarmBroadcast received time:"+time);
         Log.d(NOTI,text);
 
@@ -40,17 +43,13 @@ public class AlarmBroadcast extends BroadcastReceiver {
         launchMainActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         //Notification Builder
-        // PendingIntent should be used only once. If the user interacts with the notification, the PendingIntent will be deleted and subsequent attempts to use it will fail.
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, launchMainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, launchMainActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT| PendingIntent.FLAG_IMMUTABLE);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
-
-        PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         //here we set all the properties for the notification
         RemoteViews contentView = new RemoteViews(context.getPackageName(), R.layout.notification_layout);
         contentView.setImageViewResource(R.id.icon, R.mipmap.ic_launcher);
-        contentView.setOnClickPendingIntent(R.id.flashButton, pendingSwitchIntent);
         contentView.setTextViewText(R.id.message, text);
         contentView.setTextViewText(R.id.date, time);
         contentView.setTextViewText(R.id.dosage_textView,medDosage);
@@ -75,7 +74,6 @@ public class AlarmBroadcast extends BroadcastReceiver {
         }
 
         Notification notification = mBuilder.build();
-        int notificationId = 1;
         Log.d(NOTI,"notification ID: :"+notiID);
         notificationManager.notify(notiID, notification);
 //        notificationManager.notify(notificationId, notification);
