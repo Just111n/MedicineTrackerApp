@@ -17,12 +17,14 @@ import java.net.URL;
 
 public class Utils {
 
+    private static final String GET = "GET";
+
     private static InputStream getInputStream (URL url) {
         HttpURLConnection urlConnection;
         InputStream inputStream = null;
         try{
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestMethod(GET);
             urlConnection.setDoInput(true);
             urlConnection.connect();
             inputStream = urlConnection.getInputStream();

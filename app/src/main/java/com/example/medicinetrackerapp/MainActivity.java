@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     final static String CLIPBOARD_LABEL = "CLIPBOARD_LABEL";
     private FirebaseAuth mAuth;
     static DatabaseReference mbaseUser;
-    static DatabaseReference mbase1UserReminders;
+    static DatabaseReference mbaseUserReminders;
     private RecyclerView remindersRecyclerView;
     private FloatingActionButton addReminderFab;
     private FirebaseRemindersAdapter adapter;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             uid = mAuth.getCurrentUser().getUid();
         }
         mbaseUser = FirebaseDatabase.getInstance().getReference("users"+"/"+uid);
-        mbase1UserReminders = FirebaseDatabase.getInstance().getReference("users"+"/"+uid+"/"+"reminders");
+        mbaseUserReminders = FirebaseDatabase.getInstance().getReference("users"+"/"+uid+"/"+"reminders");
 
         addReminderFab = findViewById(R.id.add_reminder_fab);
         remindersRecyclerView = findViewById(R.id.reminders_recyclerView);
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 new LinearLayoutManager(this));
         FirebaseRecyclerOptions<ReminderModel> options
                 = new FirebaseRecyclerOptions.Builder<ReminderModel>()
-                .setQuery(mbase1UserReminders, ReminderModel.class)
+                .setQuery(mbaseUserReminders, ReminderModel.class)
                 .build();
         adapter = new FirebaseRemindersAdapter(options,this);
         remindersRecyclerView.setAdapter(adapter);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void fetchRemindersFromFirebase() {
         remindersList = new ArrayList<>();
-        mbase1UserReminders.addValueEventListener(new ValueEventListener() {
+        mbaseUserReminders.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 remindersList.clear();

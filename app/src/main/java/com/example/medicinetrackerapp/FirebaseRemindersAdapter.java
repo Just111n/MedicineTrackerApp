@@ -44,7 +44,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
     @Override
     public ReminderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.reminder_list_item, parent, false);
-        return new FirebaseRemindersAdapter.ReminderViewHolder(itemView);
+        return new ReminderViewHolder(itemView);
     }
 
 
@@ -89,7 +89,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
                     .setTitle(R.string.are_you_sure)
                     .setMessage(R.string.ask_delete_reminder)
                     .setIcon(R.drawable.ic_app)
-                    .setPositiveButton(R.string.yes, (dialogInterface, i) -> MainActivity.mbase1UserReminders.child(medId).removeValue()).setNegativeButton(R.string.no,null).show();
+                    .setPositiveButton(R.string.yes, (dialogInterface, i) -> MainActivity.mbaseUserReminders.child(medId).removeValue()).setNegativeButton(R.string.no,null).show();
             return true;
         });
 
@@ -105,7 +105,7 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
 
 
 
-    class ReminderViewHolder extends RecyclerView.ViewHolder {
+    static class ReminderViewHolder extends RecyclerView.ViewHolder {
         private View itemView;
         private TextView med_name_value_text_view, med_type_value_text_view, med_notification_time_value_text_view, med_dosage_value_text_view;
         private Button med_info_button;

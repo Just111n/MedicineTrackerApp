@@ -220,24 +220,29 @@ public class ReminderEditorActivity extends AppCompatActivity {
 
 
     private void addReminderToDatabase(String newKey,String medNameSubmit, ArrayList<String> medNotificationTimesSubmit, String medDosageSubmit, String medTypeSubmit) {
-        ReminderModel newReminder = new ReminderModel();
-        newReminder.setMedName(medNameSubmit);
-        newReminder.setMedNotificationTimes(medNotificationTimesSubmit);
-        newReminder.setMedDosage(medDosageSubmit);
-        newReminder.setMedType(medTypeSubmit);
-        newReminder.setId(newKey);
+
+        ReminderModel.ReminderBuilder reminderBuilder = new ReminderModel.ReminderBuilder();
+        ReminderModel newReminder = reminderBuilder
+                .setId(newKey)
+                .setMedName(medNameSubmit)
+                .setMedNotificationTimes(medNotificationTimesSubmit)
+                .setMedDosage(medDosageSubmit)
+                .setMedType(medTypeSubmit)
+                .build();
+
         assert newKey != null;
         mbaseUserReminders.child(newKey).setValue(newReminder);
         Toast.makeText(getApplicationContext(), medNameSubmit +" added successfully", Toast.LENGTH_LONG).show();
     }
 
     private void updateReminderInDatabase(String medNameSubmit, String medId, ArrayList<String> medNotificationTimesSubmit, String medDosageSubmit, String medTypeSubmit) {
-        ReminderModel reminder = new ReminderModel();
-        reminder.setMedName(medNameSubmit);
-        reminder.setId(medId);
-        reminder.setMedNotificationTimes(medNotificationTimesSubmit);
-        reminder.setMedType(medTypeSubmit);
-        reminder.setMedDosage(medDosageSubmit);
+        ReminderModel.ReminderBuilder reminderBuilder = new ReminderModel.ReminderBuilder();
+        ReminderModel reminder = reminderBuilder
+                .setMedName(medNameSubmit)
+                .setMedNotificationTimes(medNotificationTimesSubmit)
+                .setMedDosage(medDosageSubmit)
+                .setMedType(medTypeSubmit)
+                .build();
         mbaseUserReminders.child(medId).setValue(reminder);
         Toast.makeText(getApplicationContext(), medNameSubmit +" updated successfully", Toast.LENGTH_LONG).show();
     }
