@@ -31,8 +31,11 @@ public class FirebaseRemindersAdapter extends FirebaseRecyclerAdapter<ReminderMo
 
      Context context;
 
-
-
+    /*
+    FirebaseRecyclerAdapter constructor takes care of setting up a listener
+    on the Firebase Realtime Database query and mapping the query results to
+    instances of the ReminderModel class.
+    */
     public FirebaseRemindersAdapter(@NonNull FirebaseRecyclerOptions<ReminderModel> options, Context context) {
         super(options);
         this.context = context;

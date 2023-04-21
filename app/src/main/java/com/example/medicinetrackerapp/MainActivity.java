@@ -88,15 +88,31 @@ public class MainActivity extends AppCompatActivity {
 
         addReminderFab = findViewById(R.id.add_reminder_fab);
         remindersRecyclerView = findViewById(R.id.reminders_recyclerView);
-
-
         remindersRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this));
+
+
+        /*
+        create a new FirebaseRecyclerOptions object using the FirebaseRecyclerOptions.Builder.
+        This builder allows you to specify the query to be executed on the Firebase Realtime Database
+        and the model class that should be used to deserialize the data.
+        */
         FirebaseRecyclerOptions<ReminderModel> options
                 = new FirebaseRecyclerOptions.Builder<ReminderModel>()
                 .setQuery(mbaseUserReminders, ReminderModel.class)
                 .build();
+
+        /* creates an adapter that is ready to listen to data changes on the specified Firebase Realtime Database query.
+        The adapter's constructor handles the setup of a listener on the query, and when changes occur,
+         the adapter will automatically update the RecyclerView.
+        */
         adapter = new FirebaseRemindersAdapter(options,this);
+
+        /*
+        The adapter is attached to the RecyclerView using the setAdapter() method.
+        This will cause the FirebaseRecyclerAdapter to start listening for data changes on the
+        Firebase Realtime Database query and update the RecyclerView accordingly.
+        */
         remindersRecyclerView.setAdapter(adapter);
 
         // Read data from firebase and store inside remindersList
